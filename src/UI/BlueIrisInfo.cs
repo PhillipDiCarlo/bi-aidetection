@@ -39,7 +39,7 @@ namespace AITool
         public bool IsAdmin = false;
         public bool IsEnabled = false;
     }
-    public class BlueIris
+    public class BlueIrisInfo
     {
         public List<String> ClipPaths = new List<String>();
         public List<String> Cameras = new List<String>();
@@ -55,7 +55,7 @@ namespace AITool
         public double Latitude = 39.809734;
         public double Longitude = -98.555620;
 
-        public BlueIris()
+        public BlueIrisInfo()
         {
 
         }
