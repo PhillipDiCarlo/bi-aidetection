@@ -82,6 +82,7 @@
         <PackageReference Include="NAudio.Vorbis" Version="3.0.0" />
         <PackageReference Include="NAudio.Wasapi" Version="3.1.0" />
         <PackageReference Include="NAudio.WinForms" Version="3.1.0" />
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
         <PackageReference Include="NLog" Version="6.2.1" />
         <PackageReference Include="NVorbis" Version="0.10.5" />
         <PackageReference Include="Octokit" Version="14.0.0" />
@@ -90,7 +91,7 @@
         <PackageReference Include="SQLitePCLRaw.lib.e_sqlite3" Version="3.53.3" />
         <PackageReference Include="System.Management" Version="10.0.0" />
         <PackageReference Include="System.Speech" Version="10.0.0" />
-        <PackageReference Include="Telegram.Bot" Version="19.0.0" />
+        <PackageReference Include="Telegram.Bot" Version="22.10.3.1" />
         <PackageReference Include="WindowsAPICodePack" Version="8.0.15.2" />
         <PackageReference Include="WinForms.DataVisualization" Version="1.10.2" />
     </ItemGroup>

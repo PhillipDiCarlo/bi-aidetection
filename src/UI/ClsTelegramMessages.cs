@@ -131,13 +131,13 @@ namespace AITool
 
                 Log("Debug: (Getting User Info)...");
 
-                BotUser = await this.telegramBot.GetMeAsync();
+                BotUser = await this.telegramBot.GetMe();
 
                 if (AppSettings.Settings.telegram_chatids.GetStrAtIndex(0).IsNotEmpty())
                 {
                     Log("Debug: (Sending intro message)...");
                     string AssemVer = Assembly.GetExecutingAssembly().GetName().Version.ToString();
-                    Message message = await this.telegramBot.SendTextMessageAsync(AppSettings.Settings.telegram_chatids.GetStrAtIndex(0),
+                    Message message = await this.telegramBot.SendMessage(AppSettings.Settings.telegram_chatids.GetStrAtIndex(0),
                         $"AITOOL {AssemVer} Initialized.  " +
                         $"\nTo send Telegram commands, first ask BotFather to disable '/setprivacy'.  " +
                         $"\nCommand Usage: " +
@@ -188,7 +188,7 @@ namespace AITool
 
             if (Started)
             {
-                message = await this.telegramBot.SendTextMessageAsync(ChatID, Caption);
+                message = await this.telegramBot.SendMessage(ChatID, Caption);
             }
 
             return message;
@@ -204,16 +204,16 @@ namespace AITool
 
             if (Started)
             {
-                await this.telegramBot.SendChatActionAsync(ChatID, ChatAction.UploadPhoto);
+                await this.telegramBot.SendChatAction(ChatID, ChatAction.UploadPhoto);
 
                 if (Filename.Contains("\\"))
                     Filename = Path.GetFileName(Filename);
 
                 if (file_id.IsNull())
-                    //message = await this.telegramBot.SendPhotoAsync(ChatID, new InputOnlineFile(FileStream, Filename), Caption);
-                    message = await this.telegramBot.SendPhotoAsync(ChatID, new InputFileStream(FileStream, Filename), caption: Caption);
+                    //message = await this.telegramBot.SendPhoto(ChatID, new InputOnlineFile(FileStream, Filename), Caption);
+                    message = await this.telegramBot.SendPhoto(ChatID, new InputFileStream(FileStream, Filename), caption: Caption);
                 else
-                    message = await this.telegramBot.SendPhotoAsync(ChatID, InputFile.FromFileId(file_id), caption: Caption);
+                    message = await this.telegramBot.SendPhoto(ChatID, InputFile.FromFileId(file_id), caption: Caption);
             }
 
             return message;
@@ -254,7 +254,7 @@ namespace AITool
                     Stopwatch sw = Stopwatch.StartNew();
                     using (FileStream fileStream = System.IO.File.OpenWrite(filePath))
                     {
-                        Telegram.Bot.Types.File file = await this.telegramBot.GetInfoAndDownloadFileAsync(fileId: update.Message.Voice.FileId, destination: fileStream);
+                        Telegram.Bot.Types.TGFile file = await this.telegramBot.GetInfoAndDownloadFile(fileId: update.Message.Voice.FileId, destination: fileStream);
                     }
                     Log($"Debug: ...Done in {sw.ElapsedMilliseconds}ms");
                     Global.TelegramControlMessage($"play:{filePath}");
