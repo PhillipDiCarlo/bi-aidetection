@@ -45,7 +45,7 @@ Goal: adding a new AI backend or notification channel means adding one class, no
   - [x] `SightHoundProvider`
   - [x] `AwsRekognitionProvider`
   - [x] Registry keyed on `URLTypeEnum`; `GetDetectionsFromAIServer` becomes a lookup + call.
-- [ ] **1.2 Extract `INotificationChannel`.** Same treatment for `ClsTriggerActionQueue`: Telegram, Pushover, MQTT, trigger/cancel URL, sound, run-program, image-copy each become a class with `Task SendAsync(...)` / `Task CancelAsync(...)`.
+- [x] **1.2 Extract `INotificationChannel`.** _Landed as `IActionChannel` in `src/UI/Actions/`._ Same treatment for `ClsTriggerActionQueue`: Telegram, Pushover, MQTT, trigger/cancel URL, sound, run-program, image-copy each become a class with `Task SendAsync(...)` / `Task CancelAsync(...)`.
 - [ ] **1.3 Encrypt all secrets at rest.** Only the Blue Iris password uses DPAPI today. Apply the existing `.Encrypt()`/`.Decrypt()` to `telegram_token`, `mqtt_password`, `pushover_APIKey`, `pushover_UserKey`, `AmazonSecretKey`, `SightHoundAPIKey`, `deepstack_adminkey`, `deepstack_apikey`. Migrate plaintext values on first load.
 - [ ] **1.4 Blue Iris JSON API client.** Replace `user=&pw=` query-string credentials in trigger URLs with session login via `/json` (`login` → MD5(session:user:pw) → `trigger`, `alertlist`, `camlist`). Keep the legacy URL action working for people with custom URLs.
 - [ ] **1.5 Async hygiene.** Replace `.Result` / `.Wait()` on the UI thread (93 sites) and the `async void` event handlers in `Shell.cs` (33) with proper `async Task` + `await`. Remove leftover debug code (`int testing = 0;`).
