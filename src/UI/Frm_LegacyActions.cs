@@ -186,6 +186,11 @@ namespace AITool
             Global_GUI.GroupboxEnableDisable(groupBoxMQTT, (CheckBox)sender);
         }
 
+        private void cb_Webhook_enabled_CheckedChanged(object sender, EventArgs e)
+        {
+            Global_GUI.GroupboxEnableDisable(groupBoxWebhook, (CheckBox)sender);
+        }
+
         private void cb_PlaySound_CheckedChanged(object sender, EventArgs e)
         {
             tb_Sounds.Enabled = cb_PlaySound.Checked;

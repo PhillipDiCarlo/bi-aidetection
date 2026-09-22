@@ -15,4 +15,10 @@
   <ItemGroup>
     <ProjectReference Include="..\UI\UI.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\UI\TestImage.jpg">
+      <Link>TestImage.jpg</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
 </Project>

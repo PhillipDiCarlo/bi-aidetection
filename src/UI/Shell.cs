@@ -3863,6 +3863,16 @@ namespace AITool
                 frm.tb_MQTT_Topic_Cancel.Text = cam.Action_mqtt_topic_cancel;
                 frm.cb_MQTT_SendImage.Checked = cam.Action_mqtt_send_image;
 
+                frm.cb_Webhook_enabled.Checked = cam.Action_webhook_enabled;
+                frm.tb_Webhook_Url.Text = cam.Action_webhook_url;
+                frm.tb_Webhook_Method.Text = cam.Action_webhook_method;
+                frm.tb_Webhook_ContentType.Text = cam.Action_webhook_content_type;
+                frm.tb_Webhook_Headers.Text = cam.Action_webhook_headers;
+                frm.tb_Webhook_Body.Text = cam.Action_webhook_body;
+                frm.cb_Webhook_SendImage.Checked = cam.Action_webhook_send_image;
+                frm.tb_Webhook_CancelUrl.Text = cam.Action_webhook_cancel_url;
+                frm.tb_Webhook_CancelBody.Text = cam.Action_webhook_cancel_body;
+
                 frm.cb_Pushover_Enabled.Checked = cam.Action_pushover_enabled;
                 frm.tb_Pushover_Title.Text = cam.Action_pushover_title;
                 frm.tb_Pushover_Message.Text = cam.Action_pushover_message;
@@ -3883,6 +3893,7 @@ namespace AITool
                 Global_GUI.GroupboxEnableDisable(frm.groupBoxPushover, frm.cb_Pushover_Enabled);
                 Global_GUI.GroupboxEnableDisable(frm.groupBoxTelegram, frm.cb_telegram);
                 Global_GUI.GroupboxEnableDisable(frm.groupBoxMQTT, frm.cb_MQTT_enabled);
+                Global_GUI.GroupboxEnableDisable(frm.groupBoxWebhook, frm.cb_Webhook_enabled);
                 Global_GUI.GroupboxEnableDisable(frm.groupBoxUrlTrigger, frm.cb_UrlTriggerEnabled);
                 Global_GUI.GroupboxEnableDisable(frm.groupBoxUrlCancel, frm.cb_UrlCancelEnabled);
 
@@ -3950,6 +3961,16 @@ namespace AITool
                     cam.Action_mqtt_topic_cancel = frm.tb_MQTT_Topic_Cancel.Text.Trim();
                     cam.Action_mqtt_send_image = frm.cb_MQTT_SendImage.Checked;
 
+                    cam.Action_webhook_enabled = frm.cb_Webhook_enabled.Checked;
+                    cam.Action_webhook_url = frm.tb_Webhook_Url.Text.Trim();
+                    cam.Action_webhook_method = frm.tb_Webhook_Method.Text.Trim();
+                    cam.Action_webhook_content_type = frm.tb_Webhook_ContentType.Text.Trim();
+                    cam.Action_webhook_headers = frm.tb_Webhook_Headers.Text.Trim();
+                    cam.Action_webhook_body = frm.tb_Webhook_Body.Text.Trim();
+                    cam.Action_webhook_send_image = frm.cb_Webhook_SendImage.Checked;
+                    cam.Action_webhook_cancel_url = frm.tb_Webhook_CancelUrl.Text.Trim();
+                    cam.Action_webhook_cancel_body = frm.tb_Webhook_CancelBody.Text.Trim();
+
                     cam.Action_pushover_enabled = frm.cb_Pushover_Enabled.Checked;
                     cam.Action_pushover_title = frm.tb_Pushover_Title.Text.Trim();
                     cam.Action_pushover_message = frm.tb_Pushover_Message.Text.Trim();
@@ -3993,6 +4014,8 @@ namespace AITool
                 Lbl_Actions.Text += ", Pushover";
             if (cam.Action_mqtt_enabled)
                 Lbl_Actions.Text += ", MQTT";
+            if (cam.Action_webhook_enabled)
+                Lbl_Actions.Text += ", Webhook";
             if (cam.Action_RunProgram)
                 Lbl_Actions.Text += ", Run";
             if (cam.Action_PlaySounds)
