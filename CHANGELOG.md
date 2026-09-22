@@ -6,6 +6,8 @@ https://github.com/VorlonCD/bi-aidetection/commits/master
 ## Unreleased
 
 ### Added
+- **Local detection with no AI server**: new `Local_ONNX` AI server type runs a YOLOv8/v11 `.onnx` model in-process with ONNX Runtime (DirectML GPU, CPU fallback). Point the server's URL/"Model Path" at the exported model (`yolo export model=yolo11n.pt format=onnx`). Class names come from an optional `<model>.names` sidecar, defaulting to COCO.
+- **Blue Onyx** is a selectable AI server type (DeepStack-compatible API, default port 32168).
 - **Vision-LLM refinement**: new AI server types `OpenAI_Vision` (any OpenAI-compatible endpoint: Ollama, LM Studio, OpenAI, OpenRouter, ...) and `Anthropic_Vision`. Configure as a refinement server with a prompt; the model's description and any objects it localizes flow into the summary/memo like any other detection. API keys are stored encrypted.
 - **Webhook action** per camera: POST/PUT any URL with a templated body and headers, optional multipart image, optional cancel call. See `webhook.md`.
 - **Home Assistant MQTT discovery**: one switch in MQTT settings publishes per-camera motion/person/vehicle/animal `binary_sensor`s (and optionally an MQTT camera) that auto-appear in Home Assistant. See `mqtt.md`.
@@ -23,6 +25,7 @@ https://github.com/VorlonCD/bi-aidetection/commits/master
 - Telegram token, MQTT password, Pushover keys, AWS secret key, SightHound key and DeepStack keys are now stored DPAPI-encrypted in `AITOOL.Settings.JSON` (previously plaintext). Existing files are migrated automatically on the next save.
 
 ### Changed
+- AITool is now built as a 64-bit-only application (it already shipped a 64-bit-only SQLite; DirectML requires an explicit platform target).
 - The DeepStack tab is hidden unless DeepStack for Windows is installed (DeepStack is unmaintained). Set `ShowDeepStackTab` to `true` in `AITOOL.Settings.JSON` to force it.
 - All NuGet packages updated; known vulnerabilities in ImageSharp and SQLitePCLRaw resolved.
 - Telegram.Bot 22, MQTTnet 5, AWS SDK v4, NLog 6. No user-visible behavior changes are intended.
