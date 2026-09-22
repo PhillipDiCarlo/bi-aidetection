@@ -33,6 +33,7 @@ namespace AITool
         SightHound_Vehicle,
         SightHound_Person,
         Blue_Onyx,
+        Local_ONNX,
         Other,
         Unknown
     }
@@ -138,6 +139,7 @@ namespace AITool
         public bool UrlFixed { get; set; } = false;
         public bool ExternalSettingsValid { get; set; } = false;
         public bool IgnoreOfflineError { get; set; } = false;  //if we cant even ping the server, we can skip it without giving an error.  This might be useful for servers that are only available at certain times of the day
+        public bool OnnxUseGpu { get; set; } = true;  //Local_ONNX only: try DirectML (GPU) first, fall back to CPU if unavailable
         public bool AllowAIServerBasedQueue { get; set; } = false;
         public int AIMaxQueueLength { get; set; } = 16;
         public int SkipIfImgQueueLengthLarger { get; set; } = 8;
@@ -270,6 +272,12 @@ namespace AITool
 
             bool IsAWS = this.Type == URLTypeEnum.AWSRekognition_Objects || this.Type == URLTypeEnum.AWSRekognition_Faces;
 
+            if (this.Type == URLTypeEnum.Local_ONNX)
+            {
+                //"Online" for a local model just means the .onnx file is where we expect it
+                this.IsOnline = File.Exists(this.url);
+                return this.IsOnline;
+            }
 
             if (this.IsValid && this.Host.IsNotEmpty() && !IsAWS)
             {
@@ -408,6 +416,14 @@ namespace AITool
                     this.DefaultURL = "http://127.0.0.1:32168/v1/vision/detection";
                     this.HelpURL = "https://github.com/xnorpx/blue-onyx";
                     this.Type = URLTypeEnum.Blue_Onyx;
+                }
+                else if (this.Type == URLTypeEnum.Local_ONNX)
+                {
+                    //url here is a local path to a .onnx model file, not an HTTP URL - export one with:
+                    //yolo export model=yolo11n.pt format=onnx
+                    this.DefaultURL = "";
+                    this.HelpURL = "https://docs.ultralytics.com/modes/export/";
+                    this.Type = URLTypeEnum.Local_ONNX;
                 }
                 else if (this.Type == URLTypeEnum.CodeProject_AI || HasCP)
                 {
@@ -582,6 +598,10 @@ namespace AITool
                 this.url = Global.UpdateURL(this.url, 443, "/v1/detections", "", ref WasFixed, ref HadError);
                 this.Type = URLTypeEnum.SightHound_Person;
             }
+            else if (this.Type == URLTypeEnum.Local_ONNX)
+            {
+                //this.url is a local model file path, not an HTTP URL - leave it alone
+            }
             else  // assume deepstack, default to detection
             {
 
@@ -633,8 +653,9 @@ namespace AITool
             //================================================================================
 
             bool IsAWS = this.Type == URLTypeEnum.AWSRekognition_Objects || this.Type == URLTypeEnum.AWSRekognition_Faces;
+            bool IsLocalOnnx = this.Type == URLTypeEnum.Local_ONNX;
 
-            if (!IsAWS)
+            if (!IsAWS && !IsLocalOnnx)
             {
                 if (Global.IsValidURL(this.url) && !HadError)
                 {
@@ -697,6 +718,14 @@ namespace AITool
                     ret = false;
                 }
             }
+            else if (IsLocalOnnx)
+            {
+                //url here is a local .onnx model file path - it may not exist yet, that's checked (with a helpful error) at detection time
+                this.CurSrv = "Local_ONNX:" + Path.GetFileName(this.url);
+                this.IsLocalHost = true;
+                this.IsLocalNetwork = true;
+                ret = this.url.IsNotEmpty();
+            }
             else
             {
                 if (IsAWS)
@@ -741,7 +770,7 @@ namespace AITool
                 AITOOL.Log($"Error: '{this.Type.ToString()}' URL is not known/valid: '{this.url}'");
             }
 
-            if (!IsAWS && this.IsValid && this.HttpClient == null)
+            if (!IsAWS && !IsLocalOnnx && this.IsValid && this.HttpClient == null)
             {
                 this.HttpClient = new HttpClient();
                 this.HttpClient.Timeout = this.GetTimeout();

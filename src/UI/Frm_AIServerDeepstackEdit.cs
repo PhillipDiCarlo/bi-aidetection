@@ -35,6 +35,20 @@ namespace AITool
             else
                 this.tb_URL.Enabled = true;
 
+            if (this.CurURL.Type == URLTypeEnum.Local_ONNX)
+            {
+                this.label2.Text = "Model Path:";
+                this.bt_Browse.Visible = true;
+                this.cb_OnnxUseGpu.Visible = true;
+                this.cb_OnnxUseGpu.Checked = this.CurURL.OnnxUseGpu;
+            }
+            else
+            {
+                this.label2.Text = "URL:";
+                this.bt_Browse.Visible = false;
+                this.cb_OnnxUseGpu.Visible = false;
+            }
+
             this.tb_ActiveTimeRange.Text = this.CurURL.ActiveTimeRange;
             this.chk_Enabled.Checked = this.CurURL.Enabled;
             this.tb_ApplyToCams.Text = this.CurURL.Cameras;
@@ -182,6 +196,8 @@ namespace AITool
 
             this.CurURL.IgnoreOfflineError = this.cb_IgnoreOffline.Checked;
 
+            this.CurURL.OnnxUseGpu = this.cb_OnnxUseGpu.Checked;
+
             this.CurURL.AllowAIServerBasedQueue = this.cb_AllowAIServerBasedQueue.Checked;
 
             this.CurURL.AIMaxQueueLength = this.tb_MaxQueueLength.Text.ToInt();
@@ -198,6 +214,24 @@ namespace AITool
 
 
         }
+        private void bt_Browse_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog ofd = new OpenFileDialog
+            {
+                InitialDirectory = File.Exists(tb_URL.Text) ? Path.GetDirectoryName(tb_URL.Text) : AppDomain.CurrentDomain.BaseDirectory,
+                FileName = Path.GetFileName(tb_URL.Text),
+                Title = "Select ONNX model file",
+                CheckFileExists = true,
+                CheckPathExists = true,
+                DefaultExt = "onnx",
+                Filter = "ONNX model files (*.onnx)|*.onnx|All files (*.*)|*.*",
+                RestoreDirectory = true
+            };
+
+            if (ofd.ShowDialog() == DialogResult.OK)
+                tb_URL.Text = ofd.FileName;
+        }
+
         private void linkHelpURL_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             Process.Start(linkHelpURL.Text);

@@ -17,6 +17,7 @@ public class AIProviderRegistryTests
     [InlineData(URLTypeEnum.SightHound_Vehicle, typeof(SightHoundProvider))]
     [InlineData(URLTypeEnum.AWSRekognition_Objects, typeof(AwsRekognitionProvider))]
     [InlineData(URLTypeEnum.AWSRekognition_Faces, typeof(AwsRekognitionProvider))]
+    [InlineData(URLTypeEnum.Local_ONNX, typeof(OnnxYoloProvider))]
     public void Get_ReturnsProviderForEveryImplementedType(URLTypeEnum type, System.Type expected)
     {
         Assert.IsType(expected, AIProviderRegistry.Get(type));

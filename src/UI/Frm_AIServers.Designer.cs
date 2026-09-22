@@ -48,6 +48,7 @@ namespace AITool
             deepstackSceneToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             deepstackFacesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             blueOnyxToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            localOnnxToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             addDoodsServerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             addAmazonObjectsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             addAmazonFaceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -97,7 +98,7 @@ namespace AITool
             // 
             // toolStripSplitButtonAdd
             // 
-            toolStripSplitButtonAdd.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { codeProjectAIObjectsToolStripMenuItem, codeProjectAILicensePlateToolStripMenuItem, codeProjectAIFacesToolStripMenuItem, codeProjectAISceneToolStripMenuItem, codeProjectAICustomToolStripMenuItem, codeProjectAIIPCAMAnimalToolStripMenuItem, codeProjectAIIPCAMCombinedToolStripMenuItem, codeProjectAIIPCAMDarkToolStripMenuItem, codeProjectAIIPCAMGeneralToolStripMenuItem, deepstackObjectsToolStripMenuItem, deepstackCustomToolStripMenuItem, deepstackSceneToolStripMenuItem, deepstackFacesToolStripMenuItem, blueOnyxToolStripMenuItem, addDoodsServerToolStripMenuItem, addAmazonObjectsToolStripMenuItem, addAmazonFaceToolStripMenuItem, sightHoundVehicleAIServerToolStripMenuItem, sightHoundPersonAIServerToolStripMenuItem });
+            toolStripSplitButtonAdd.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { codeProjectAIObjectsToolStripMenuItem, codeProjectAILicensePlateToolStripMenuItem, codeProjectAIFacesToolStripMenuItem, codeProjectAISceneToolStripMenuItem, codeProjectAICustomToolStripMenuItem, codeProjectAIIPCAMAnimalToolStripMenuItem, codeProjectAIIPCAMCombinedToolStripMenuItem, codeProjectAIIPCAMDarkToolStripMenuItem, codeProjectAIIPCAMGeneralToolStripMenuItem, deepstackObjectsToolStripMenuItem, deepstackCustomToolStripMenuItem, deepstackSceneToolStripMenuItem, deepstackFacesToolStripMenuItem, blueOnyxToolStripMenuItem, localOnnxToolStripMenuItem, addDoodsServerToolStripMenuItem, addAmazonObjectsToolStripMenuItem, addAmazonFaceToolStripMenuItem, sightHoundVehicleAIServerToolStripMenuItem, sightHoundPersonAIServerToolStripMenuItem });
             toolStripSplitButtonAdd.Image = (System.Drawing.Image)resources.GetObject("toolStripSplitButtonAdd.Image");
             toolStripSplitButtonAdd.ImageTransparentColor = System.Drawing.Color.Magenta;
             toolStripSplitButtonAdd.Name = "toolStripSplitButtonAdd";
@@ -221,6 +222,15 @@ namespace AITool
             blueOnyxToolStripMenuItem.Text = "Blue Onyx AI Server";
             blueOnyxToolStripMenuItem.ToolTipText = "DeepStack-compatible object detection using Blue Onyx (Rust, ONNX Runtime).";
             blueOnyxToolStripMenuItem.Click += blueOnyxToolStripMenuItem_Click;
+            //
+            // localOnnxToolStripMenuItem
+            //
+            localOnnxToolStripMenuItem.Image = Properties.Resources.network_server;
+            localOnnxToolStripMenuItem.Name = "localOnnxToolStripMenuItem";
+            localOnnxToolStripMenuItem.Size = new System.Drawing.Size(273, 30);
+            localOnnxToolStripMenuItem.Text = "Local ONNX (YOLO)";
+            localOnnxToolStripMenuItem.ToolTipText = "In-process object detection from a local YOLOv8/v11 .onnx model file - no external server.";
+            localOnnxToolStripMenuItem.Click += localOnnxToolStripMenuItem_Click;
             //
             // addDoodsServerToolStripMenuItem
             // 
@@ -380,6 +390,7 @@ namespace AITool
         private System.Windows.Forms.ToolStripMenuItem deepstackFacesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem deepstackSceneToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem blueOnyxToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem localOnnxToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem codeProjectAIObjectsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem codeProjectAIFacesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem codeProjectAICustomToolStripMenuItem;
