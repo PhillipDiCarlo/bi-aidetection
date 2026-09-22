@@ -40,6 +40,7 @@ namespace AITool
             public string HistoryDBFileName = ""; //Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Path.GetFileNameWithoutExtension(Assembly.GetEntryAssembly().Location) + ".Database.SQLITE3");
 
             public bool SettingsPortable = true;  //portable means the settings stay under EXE folder, otherwise they get dropped in %appdata%
+            [JsonConverter(typeof(ProtectedStringConverter))]
             public string telegram_token = "";
             public double telegram_cooldown_minutes = -1;  //Default to no more often than 5 seconds.   In minutes (How many minutes must have passed since the last detection. Used to separate event to ensure that every event only causes one telegram message.)
             public int telegram_cooldown_seconds = 5;
@@ -58,7 +59,9 @@ namespace AITool
             public int close_instantly = -1;
             public List<Camera> CameraList = new List<Camera>();
             public string deepstack_url = "";
+            [JsonConverter(typeof(ProtectedStringConverter))]
             public string deepstack_adminkey = "";
+            [JsonConverter(typeof(ProtectedStringConverter))]
             public string deepstack_apikey = "";
             public string deepstack_installfolder = "C:\\DeepStack";
             public string deepstack_port = "81";
@@ -119,6 +122,7 @@ namespace AITool
             public string mqtt_serverandport = "mqtt:1883";
             public string mqtt_username = "user";
             public bool mqtt_UseTLS = false;
+            [JsonConverter(typeof(ProtectedStringConverter))]
             public string mqtt_password = "password";
             public string mqtt_clientid = "AITool";
             public string mqtt_LastWillTopic = "AITool/status";
@@ -126,7 +130,9 @@ namespace AITool
             public string mqtt_OnlinePayload = "Online";
 
 
+            [JsonConverter(typeof(ProtectedStringConverter))]
             public string pushover_APIKey = "";
+            [JsonConverter(typeof(ProtectedStringConverter))]
             public string pushover_UserKey = "";
             public int pushover_cooldown_seconds = 5;
             public int Pushover_RetryAfterFailSeconds = 300;  //default to 5 minutes if telegram exception
@@ -175,11 +181,13 @@ namespace AITool
             public int FileSystemWatcherRetryOnErrorTimeMS = 300000;  //5 mins default
 
             public string AmazonAccessKeyId = "";
+            [JsonConverter(typeof(ProtectedStringConverter))]
             public string AmazonSecretKey = "";
             public string AmazonRegionEndpoint = "";  //https://docs.aws.amazon.com/general/latest/gr/rande.html
             public int AmazonMaxLabels = 15;
             public int AmazonMinConfidence = 25;
 
+            [JsonConverter(typeof(ProtectedStringConverter))]
             public string SightHoundAPIKey = "";   //https://accounts.sighthound.com/#/sighthound-cloud
 
             public int ActionCancelSeconds = 30;

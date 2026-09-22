@@ -311,7 +311,7 @@ namespace AITool.Actions
             }
             else
             {
-                Log($"Error:  Telegram settings misconfigured. telegram_chatids.Count={AppSettings.Settings.telegram_chatids.Count} ({string.Join(",", AppSettings.Settings.telegram_chatids)}), telegram_token='{AppSettings.Settings.telegram_token}'", CurSrv, AQI.cam, AQI.CurImg);
+                Log($"Error:  Telegram settings misconfigured. telegram_chatids.Count={AppSettings.Settings.telegram_chatids.Count} ({string.Join(",", AppSettings.Settings.telegram_chatids).ReplaceChars('*')}), telegram_token='{AppSettings.Settings.telegram_token.ReplaceChars('*')}'", CurSrv, AQI.cam, AQI.CurImg);
             }
 
             return ret;
