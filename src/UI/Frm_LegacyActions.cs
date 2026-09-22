@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using static AITool.AITOOL;
@@ -59,6 +60,12 @@ namespace AITool
 
                 frm.cb_Retain.Checked = this.cam.Action_mqtt_retain_message;
 
+                frm.cb_HomeAssistantDiscovery.Checked = AppSettings.Settings.mqtt_HomeAssistantDiscovery;
+                frm.cb_HomeAssistantPublishImage.Checked = AppSettings.Settings.mqtt_HomeAssistantPublishImage;
+                frm.tb_HomeAssistantDiscoveryPrefix.Text = AppSettings.Settings.mqtt_HomeAssistantDiscoveryPrefix;
+                frm.tb_HomeAssistantDeviceName.Text = AppSettings.Settings.mqtt_HomeAssistantDeviceName;
+                frm.tb_HomeAssistantOffDelaySeconds.Text = AppSettings.Settings.mqtt_HomeAssistantOffDelaySeconds.ToString();
+
                 if (frm.ShowDialog() == DialogResult.OK)
                 {
 
@@ -76,7 +83,19 @@ namespace AITool
 
                     this.cam.Action_mqtt_retain_message = frm.cb_Retain.Checked;
 
+                    bool WasHomeAssistantDiscoveryEnabled = AppSettings.Settings.mqtt_HomeAssistantDiscovery;
+
+                    AppSettings.Settings.mqtt_HomeAssistantDiscovery = frm.cb_HomeAssistantDiscovery.Checked;
+                    AppSettings.Settings.mqtt_HomeAssistantPublishImage = frm.cb_HomeAssistantPublishImage.Checked;
+                    AppSettings.Settings.mqtt_HomeAssistantDiscoveryPrefix = frm.tb_HomeAssistantDiscoveryPrefix.Text.Trim();
+                    AppSettings.Settings.mqtt_HomeAssistantDeviceName = frm.tb_HomeAssistantDeviceName.Text.Trim();
+                    AppSettings.Settings.mqtt_HomeAssistantOffDelaySeconds = frm.tb_HomeAssistantOffDelaySeconds.Text.Trim().ToInt();
+
                     AppSettings.SaveAsync();
+
+                    //republish discovery configs right away if it was just turned on, otherwise HA wont see the cameras until the next MQTT (re)connect
+                    if (!WasHomeAssistantDiscoveryEnabled && AppSettings.Settings.mqtt_HomeAssistantDiscovery)
+                        Task.Run(() => mqttClient.PublishHomeAssistantDiscoveryAsync());
 
                 }
             }
