@@ -32,6 +32,8 @@ namespace AITool
         AWSRekognition_Faces,
         SightHound_Vehicle,
         SightHound_Person,
+        OpenAI_Vision,
+        Anthropic_Vision,
         Other,
         Unknown
     }
@@ -129,6 +131,12 @@ namespace AITool
         public int HttpClientTimeoutSeconds { get; set; } = 0;
         public string DefaultURL { get; set; } = "";
         public string HelpURL { get; set; } = "";
+        [JsonConverter(typeof(ProtectedStringConverter))]
+        public string ApiKey { get; set; } = "";   //used by OpenAI_Vision (optional, eg local Ollama) and Anthropic_Vision (required)
+        public string ModelName { get; set; } = "";
+        public string Prompt { get; set; } = "";
+        public int MaxTokens { get; set; } = 512;
+        public int ImageMaxDimension { get; set; } = 1024;  //downscale the longest side of the image to this many pixels before sending to a vision LLM to control cost
         //[JsonIgnore]
         //public Global.ClsProcess Process { get; set; } = null;
         [JsonIgnore]
@@ -343,6 +351,8 @@ namespace AITool
             bool HasAWSFac = this.url.Equals("amazon_faces", StringComparison.OrdinalIgnoreCase);
             bool HasSHPer = this.url.IndexOf("/v1/detections", StringComparison.OrdinalIgnoreCase) >= 0;
             bool HasSHVeh = this.url.IndexOf("/v1/recognition", StringComparison.OrdinalIgnoreCase) >= 0;
+            bool HasOpenAIVision = this.url.IndexOf("/v1/chat/completions", StringComparison.OrdinalIgnoreCase) >= 0;
+            bool HasAnthropicVision = this.url.IndexOf("/v1/messages", StringComparison.OrdinalIgnoreCase) >= 0;
             bool HasDSFacRec = this.url.IndexOf("/v1/vision/face/recognize", StringComparison.OrdinalIgnoreCase) >= 0;  //Face Recognition
             bool HasDSFacDet = this.url.IndexOf("/v1/vision/face", StringComparison.OrdinalIgnoreCase) >= 0;  //Face Detections
             bool HasDSCus = this.url.IndexOf("/v1/vision/custom", StringComparison.OrdinalIgnoreCase) >= 0;
@@ -401,6 +411,33 @@ namespace AITool
                     this.IsLocalNetwork = false;
                     this.HttpClient = null;
                     this.MaxImagesPerMonth = 5000;
+                }
+                else if (this.Type == URLTypeEnum.OpenAI_Vision || HasOpenAIVision)
+                {
+                    //Any OpenAI-compatible /v1/chat/completions endpoint: Ollama, LM Studio, OpenAI, OpenRouter, Gemini's OpenAI-compat endpoint, etc
+                    this.DefaultURL = "http://127.0.0.1:11434/v1/chat/completions";
+                    this.HelpURL = "https://platform.openai.com/docs/api-reference/chat";
+                    this.Type = URLTypeEnum.OpenAI_Vision;
+                    this.UseAsRefinementServer = true;
+                    this.RefinementObjects = "*";
+                    if (this.ModelName.IsEmpty())
+                        this.ModelName = "llava";
+                    if (this.Prompt.IsEmpty())
+                        this.Prompt = AIProviders.VisionLlmProvider.DefaultPrompt;
+                }
+                else if (this.Type == URLTypeEnum.Anthropic_Vision || HasAnthropicVision)
+                {
+                    this.DefaultURL = "https://api.anthropic.com/v1/messages";
+                    this.HelpURL = "https://docs.claude.com/en/api/messages";
+                    this.Type = URLTypeEnum.Anthropic_Vision;
+                    this.UseAsRefinementServer = true;
+                    this.RefinementObjects = "*";
+                    if (this.ModelName.IsEmpty())
+                        this.ModelName = "claude-opus-5";
+                    if (this.Prompt.IsEmpty())
+                        this.Prompt = AIProviders.VisionLlmProvider.DefaultPrompt;
+                    this.IsLocalHost = false;
+                    this.IsLocalNetwork = false;
                 }
                 else if (this.Type == URLTypeEnum.CodeProject_AI || HasCP)
                 {
@@ -528,6 +565,8 @@ namespace AITool
             HasAWSFac = this.url.Equals("amazon_faces", StringComparison.OrdinalIgnoreCase);
             HasSHPer = this.url.IndexOf("/v1/detections", StringComparison.OrdinalIgnoreCase) >= 0;
             HasSHVeh = this.url.IndexOf("/v1/recognition", StringComparison.OrdinalIgnoreCase) >= 0;
+            HasOpenAIVision = this.url.IndexOf("/v1/chat/completions", StringComparison.OrdinalIgnoreCase) >= 0;
+            HasAnthropicVision = this.url.IndexOf("/v1/messages", StringComparison.OrdinalIgnoreCase) >= 0;
             HasDSFacRec = this.url.IndexOf("/v1/vision/face/recognize", StringComparison.OrdinalIgnoreCase) >= 0;  //Face Recognition
             HasDSFacDet = this.url.IndexOf("/v1/vision/face", StringComparison.OrdinalIgnoreCase) >= 0;  //Face Detections - Not using this for now
             HasDSCus = this.url.IndexOf("/v1/vision/custom", StringComparison.OrdinalIgnoreCase) >= 0;
@@ -574,6 +613,15 @@ namespace AITool
             {
                 this.url = Global.UpdateURL(this.url, 443, "/v1/detections", "", ref WasFixed, ref HadError);
                 this.Type = URLTypeEnum.SightHound_Person;
+            }
+            else if (this.Type == URLTypeEnum.OpenAI_Vision || HasOpenAIVision)
+            {
+                this.Type = URLTypeEnum.OpenAI_Vision;
+            }
+            else if (this.Type == URLTypeEnum.Anthropic_Vision || HasAnthropicVision)
+            {
+                this.url = Global.UpdateURL(this.url, 443, "/v1/messages", "", ref WasFixed, ref HadError);
+                this.Type = URLTypeEnum.Anthropic_Vision;
             }
             else  // assume deepstack, default to detection
             {
@@ -677,6 +725,14 @@ namespace AITool
                     else if (this.Type == URLTypeEnum.SightHound_Vehicle)
                     {
                         this.CurSrv = "SightHound_Vehicle:" + uri.Host + ":" + uri.Port; this.IsLocalHost = false; this.IsLocalNetwork = false;
+                    }
+                    else if (this.Type == URLTypeEnum.OpenAI_Vision)
+                    {
+                        this.CurSrv = "OpenAI_Vision:" + uri.Host + ":" + uri.Port;
+                    }
+                    else if (this.Type == URLTypeEnum.Anthropic_Vision)
+                    {
+                        this.CurSrv = "Anthropic_Vision:" + uri.Host + ":" + uri.Port; this.IsLocalHost = false; this.IsLocalNetwork = false;
                     }
                     else
                     {

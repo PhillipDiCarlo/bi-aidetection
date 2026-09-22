@@ -9,6 +9,7 @@ namespace AITool.AIProviders
         private static readonly IAIProvider SightHound = new SightHoundProvider();
         private static readonly IAIProvider Doods = new DoodsProvider();
         private static readonly IAIProvider AwsRekognition = new AwsRekognitionProvider();
+        private static readonly IAIProvider VisionLlm = new VisionLlmProvider();
 
         private static readonly Dictionary<URLTypeEnum, IAIProvider> Providers = new Dictionary<URLTypeEnum, IAIProvider>
         {
@@ -30,6 +31,8 @@ namespace AITool.AIProviders
             { URLTypeEnum.AWSRekognition_Faces, AwsRekognition },
             { URLTypeEnum.SightHound_Vehicle, SightHound },
             { URLTypeEnum.SightHound_Person, SightHound },
+            { URLTypeEnum.OpenAI_Vision, VisionLlm },
+            { URLTypeEnum.Anthropic_Vision, VisionLlm },
         };
 
         /// <summary>Returns null for types with no backend implementation (Other, Unknown).</summary>

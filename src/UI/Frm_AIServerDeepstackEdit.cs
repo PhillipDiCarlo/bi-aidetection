@@ -35,6 +35,17 @@ namespace AITool
             else
                 this.tb_URL.Enabled = true;
 
+            bool IsVisionLlm = this.CurURL.Type == URLTypeEnum.OpenAI_Vision || this.CurURL.Type == URLTypeEnum.Anthropic_Vision;
+            this.groupBoxVisionLlm.Visible = IsVisionLlm;
+            if (IsVisionLlm)
+            {
+                this.tb_ApiKey.Text = this.CurURL.ApiKey;
+                this.tb_ModelName.Text = this.CurURL.ModelName;
+                this.tb_MaxTokens.Text = this.CurURL.MaxTokens.ToString();
+                this.tb_ImageMaxDimension.Text = this.CurURL.ImageMaxDimension.ToString();
+                this.tb_Prompt.Text = this.CurURL.Prompt;
+            }
+
             this.tb_ActiveTimeRange.Text = this.CurURL.ActiveTimeRange;
             this.chk_Enabled.Checked = this.CurURL.Enabled;
             this.tb_ApplyToCams.Text = this.CurURL.Cameras;
@@ -179,6 +190,15 @@ namespace AITool
             this.CurURL.UseOnlyAsLinkedServer = this.cb_OnlyLinked.Checked;
 
             this.CurURL.HttpClientTimeoutSeconds = this.tb_timeout.Text.ToInt();
+
+            if (this.CurURL.Type == URLTypeEnum.OpenAI_Vision || this.CurURL.Type == URLTypeEnum.Anthropic_Vision)
+            {
+                this.CurURL.ApiKey = this.tb_ApiKey.Text.Trim();
+                this.CurURL.ModelName = this.tb_ModelName.Text.Trim();
+                this.CurURL.MaxTokens = this.tb_MaxTokens.Text.ToInt();
+                this.CurURL.ImageMaxDimension = this.tb_ImageMaxDimension.Text.ToInt();
+                this.CurURL.Prompt = this.tb_Prompt.Text;
+            }
 
             this.CurURL.IgnoreOfflineError = this.cb_IgnoreOffline.Checked;
 
