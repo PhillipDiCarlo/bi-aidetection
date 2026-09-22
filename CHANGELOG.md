@@ -6,7 +6,7 @@ https://github.com/VorlonCD/bi-aidetection/commits/master
 ## Unreleased
 
 ### Added
-- **Local detection with no AI server**: new `Local_ONNX` AI server type runs a YOLOv8/v11 `.onnx` model in-process with ONNX Runtime (DirectML GPU, CPU fallback). Point the server's URL/"Model Path" at the exported model (`yolo export model=yolo11n.pt format=onnx`). Class names come from an optional `<model>.names` sidecar, defaulting to COCO.
+- **Works out of the box with no AI server**: on a fresh install a "Local YOLO (built-in)" server is created automatically and the default model (YOLOv8n, ~12 MB) is downloaded on first use. Detection runs in-process with ONNX Runtime (DirectML GPU, CPU fallback). To use your own model, point a `Local_ONNX` server's "Model Path" at an exported `.onnx` (`yolo export model=yolo11n.pt format=onnx`); class names come from an optional `<model>.names` sidecar. See `docs/local-detection.md`.
 - **Blue Onyx** is a selectable AI server type (DeepStack-compatible API, default port 32168).
 - **Vision-LLM refinement**: new AI server types `OpenAI_Vision` (any OpenAI-compatible endpoint: Ollama, LM Studio, OpenAI, OpenRouter, ...) and `Anthropic_Vision`. Configure as a refinement server with a prompt; the model's description and any objects it localizes flow into the summary/memo like any other detection. API keys are stored encrypted.
 - **Webhook action** per camera: POST/PUT any URL with a templated body and headers, optional multipart image, optional cancel call. See `webhook.md`.
