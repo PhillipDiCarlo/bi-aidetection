@@ -9,6 +9,13 @@ https://github.com/VorlonCD/bi-aidetection/commits/master
 - Now requires the **.NET 10 Desktop Runtime** (was .NET 8, which leaves support in November 2026).
   https://dotnet.microsoft.com/en-us/download/dotnet/10.0
 
+### Fixed
+- Overlap percentage between two detections (used for duplicate merging and refinement matching) was computed with the wrong denominator whenever the two rectangles had different widths. It is now a proper Dice coefficient, so "MergePredictionsMinMatchPercent" behaves consistently regardless of object size.
+- Settings were not reliably saved on exit (the final save was not awaited).
+
+### Security
+- Telegram token, MQTT password, Pushover keys, AWS secret key, SightHound key and DeepStack keys are now stored DPAPI-encrypted in `AITOOL.Settings.JSON` (previously plaintext). Existing files are migrated automatically on the next save.
+
 ### Changed
 - All NuGet packages updated; known vulnerabilities in ImageSharp and SQLitePCLRaw resolved.
 - Telegram.Bot 22, MQTTnet 5, AWS SDK v4, NLog 6. No user-visible behavior changes are intended.

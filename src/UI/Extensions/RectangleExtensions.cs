@@ -34,8 +34,13 @@ namespace AITool
 
             Rectangle objIntersect = Rectangle.Intersect(rect, compareRect);
 
-            double percentage = ((objIntersect.Width * objIntersect.Height * 2) * 100) /
-                                ((compareRect.Width * compareRect.Height) + (compareRect.Width * rect.Height));
+            // Dice coefficient: 2 * intersection / (area A + area B), as a percentage
+            double areaA = (double)rect.Width * rect.Height;
+            double areaB = (double)compareRect.Width * compareRect.Height;
+            if (areaA + areaB == 0)
+                return 0;
+
+            double percentage = ((double)objIntersect.Width * objIntersect.Height * 2 * 100) / (areaA + areaB);
 
             return percentage;
         }

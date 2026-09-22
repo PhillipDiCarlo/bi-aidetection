@@ -58,3 +58,26 @@ public class RectangleMatchingTests
         Assert.False(AITOOL.RectangleMatches(a, b, 0, out _, true));
     }
 }
+
+public class IntersectPercentRegressionTests
+{
+    [Fact]
+    public void IntersectPercent_IsSymmetricForDifferentWidths()
+    {
+        // Before the fix the denominator used compareRect.Width * rect.Height, so the
+        // result depended on which rectangle was "first" whenever widths differed.
+        var narrow = new Rectangle(0, 0, 50, 100);
+        var wide = new Rectangle(0, 0, 100, 100);
+
+        // narrow is fully inside wide: 2*5000 / (5000 + 10000) = 66.67%
+        Assert.Equal(66.6667, narrow.IntersectPercent(wide), 3);
+        Assert.Equal(narrow.IntersectPercent(wide), wide.IntersectPercent(narrow), 6);
+    }
+
+    [Fact]
+    public void IntersectPercent_ZeroAreaRectanglesDoNotDivideByZero()
+    {
+        var empty = new Rectangle(0, 0, 0, 0);
+        Assert.Equal(0, empty.IntersectPercent(empty));
+    }
+}
