@@ -85,10 +85,22 @@ namespace AITool
             btTest = new System.Windows.Forms.Button();
             bt_clear = new System.Windows.Forms.Button();
             timer1 = new System.Windows.Forms.Timer(components);
+            groupBoxVisionLlm = new System.Windows.Forms.GroupBox();
+            lbl_ApiKey = new System.Windows.Forms.Label();
+            tb_ApiKey = new System.Windows.Forms.TextBox();
+            lbl_ModelName = new System.Windows.Forms.Label();
+            tb_ModelName = new System.Windows.Forms.TextBox();
+            lbl_MaxTokens = new System.Windows.Forms.Label();
+            tb_MaxTokens = new System.Windows.Forms.TextBox();
+            lbl_ImageMaxDimension = new System.Windows.Forms.Label();
+            tb_ImageMaxDimension = new System.Windows.Forms.TextBox();
+            lbl_Prompt = new System.Windows.Forms.Label();
+            tb_Prompt = new System.Windows.Forms.TextBox();
             groupBox1.SuspendLayout();
             gb_AIServerQueue.SuspendLayout();
             groupBoxLinked.SuspendLayout();
             groupBoxRefine.SuspendLayout();
+            groupBoxVisionLlm.SuspendLayout();
             SuspendLayout();
             // 
             // label1
@@ -134,7 +146,7 @@ namespace AITool
             // 
             bt_Save.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
             bt_Save.DialogResult = System.Windows.Forms.DialogResult.OK;
-            bt_Save.Location = new System.Drawing.Point(576, 533);
+            bt_Save.Location = new System.Drawing.Point(576, 696);
             bt_Save.Name = "bt_Save";
             bt_Save.Size = new System.Drawing.Size(70, 30);
             bt_Save.TabIndex = 17;
@@ -630,32 +642,32 @@ namespace AITool
             label7.Text = "Max Images Per Month:";
             // 
             // linkHelpURL
-            // 
+            //
             linkHelpURL.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             linkHelpURL.AutoSize = true;
-            linkHelpURL.Location = new System.Drawing.Point(5, 530);
+            linkHelpURL.Location = new System.Drawing.Point(5, 693);
             linkHelpURL.Name = "linkHelpURL";
             linkHelpURL.Size = new System.Drawing.Size(10, 13);
             linkHelpURL.TabIndex = 8;
             linkHelpURL.TabStop = true;
             linkHelpURL.Text = ".";
             linkHelpURL.LinkClicked += linkHelpURL_LinkClicked;
-            // 
+            //
             // btTest
-            // 
+            //
             btTest.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
-            btTest.Location = new System.Drawing.Point(500, 533);
+            btTest.Location = new System.Drawing.Point(500, 696);
             btTest.Name = "btTest";
             btTest.Size = new System.Drawing.Size(70, 30);
             btTest.TabIndex = 16;
             btTest.Text = "Test";
             btTest.UseVisualStyleBackColor = true;
             btTest.Click += btTest_Click;
-            // 
+            //
             // bt_clear
-            // 
+            //
             bt_clear.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
-            bt_clear.Location = new System.Drawing.Point(424, 533);
+            bt_clear.Location = new System.Drawing.Point(424, 696);
             bt_clear.Name = "bt_clear";
             bt_clear.Size = new System.Drawing.Size(70, 30);
             bt_clear.TabIndex = 15;
@@ -664,20 +676,135 @@ namespace AITool
             bt_clear.Click += bt_clear_Click;
             // 
             // timer1
-            // 
+            //
             timer1.Enabled = true;
             timer1.Interval = 500;
             timer1.Tick += timer1_Tick;
-            // 
+            //
+            // groupBoxVisionLlm
+            //
+            groupBoxVisionLlm.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            groupBoxVisionLlm.Controls.Add(lbl_ApiKey);
+            groupBoxVisionLlm.Controls.Add(tb_ApiKey);
+            groupBoxVisionLlm.Controls.Add(lbl_ModelName);
+            groupBoxVisionLlm.Controls.Add(tb_ModelName);
+            groupBoxVisionLlm.Controls.Add(lbl_MaxTokens);
+            groupBoxVisionLlm.Controls.Add(tb_MaxTokens);
+            groupBoxVisionLlm.Controls.Add(lbl_ImageMaxDimension);
+            groupBoxVisionLlm.Controls.Add(tb_ImageMaxDimension);
+            groupBoxVisionLlm.Controls.Add(lbl_Prompt);
+            groupBoxVisionLlm.Controls.Add(tb_Prompt);
+            groupBoxVisionLlm.Location = new System.Drawing.Point(5, 534);
+            groupBoxVisionLlm.Name = "groupBoxVisionLlm";
+            groupBoxVisionLlm.Size = new System.Drawing.Size(636, 148);
+            groupBoxVisionLlm.TabIndex = 27;
+            groupBoxVisionLlm.TabStop = false;
+            groupBoxVisionLlm.Text = "Vision LLM (OpenAI-compatible / Anthropic)";
+            //
+            // lbl_ApiKey
+            //
+            lbl_ApiKey.AutoSize = true;
+            lbl_ApiKey.Location = new System.Drawing.Point(8, 22);
+            lbl_ApiKey.Name = "lbl_ApiKey";
+            lbl_ApiKey.Size = new System.Drawing.Size(48, 13);
+            lbl_ApiKey.TabIndex = 0;
+            lbl_ApiKey.Text = "API Key:";
+            //
+            // tb_ApiKey
+            //
+            tb_ApiKey.Font = new System.Drawing.Font("Consolas", 8.25F);
+            tb_ApiKey.Location = new System.Drawing.Point(100, 19);
+            tb_ApiKey.Name = "tb_ApiKey";
+            tb_ApiKey.PasswordChar = '*';
+            tb_ApiKey.Size = new System.Drawing.Size(300, 20);
+            tb_ApiKey.TabIndex = 1;
+            toolTip1.SetToolTip(tb_ApiKey, "Required for Anthropic. Not required for a local Ollama / LM Studio server.");
+            //
+            // lbl_ModelName
+            //
+            lbl_ModelName.AutoSize = true;
+            lbl_ModelName.Location = new System.Drawing.Point(410, 22);
+            lbl_ModelName.Name = "lbl_ModelName";
+            lbl_ModelName.Size = new System.Drawing.Size(41, 13);
+            lbl_ModelName.TabIndex = 2;
+            lbl_ModelName.Text = "Model:";
+            //
+            // tb_ModelName
+            //
+            tb_ModelName.Font = new System.Drawing.Font("Consolas", 8.25F);
+            tb_ModelName.Location = new System.Drawing.Point(460, 19);
+            tb_ModelName.Name = "tb_ModelName";
+            tb_ModelName.Size = new System.Drawing.Size(168, 20);
+            tb_ModelName.TabIndex = 3;
+            //
+            // lbl_MaxTokens
+            //
+            lbl_MaxTokens.AutoSize = true;
+            lbl_MaxTokens.Location = new System.Drawing.Point(8, 48);
+            lbl_MaxTokens.Name = "lbl_MaxTokens";
+            lbl_MaxTokens.Size = new System.Drawing.Size(66, 13);
+            lbl_MaxTokens.TabIndex = 4;
+            lbl_MaxTokens.Text = "Max Tokens:";
+            //
+            // tb_MaxTokens
+            //
+            tb_MaxTokens.Font = new System.Drawing.Font("Consolas", 8.25F);
+            tb_MaxTokens.Location = new System.Drawing.Point(100, 45);
+            tb_MaxTokens.Name = "tb_MaxTokens";
+            tb_MaxTokens.Size = new System.Drawing.Size(80, 20);
+            tb_MaxTokens.TabIndex = 5;
+            tb_MaxTokens.Text = "512";
+            //
+            // lbl_ImageMaxDimension
+            //
+            lbl_ImageMaxDimension.AutoSize = true;
+            lbl_ImageMaxDimension.Location = new System.Drawing.Point(200, 48);
+            lbl_ImageMaxDimension.Name = "lbl_ImageMaxDimension";
+            lbl_ImageMaxDimension.Size = new System.Drawing.Size(150, 13);
+            lbl_ImageMaxDimension.TabIndex = 6;
+            lbl_ImageMaxDimension.Text = "Max Image Dimension (px):";
+            //
+            // tb_ImageMaxDimension
+            //
+            tb_ImageMaxDimension.Font = new System.Drawing.Font("Consolas", 8.25F);
+            tb_ImageMaxDimension.Location = new System.Drawing.Point(390, 45);
+            tb_ImageMaxDimension.Name = "tb_ImageMaxDimension";
+            tb_ImageMaxDimension.Size = new System.Drawing.Size(80, 20);
+            tb_ImageMaxDimension.TabIndex = 7;
+            tb_ImageMaxDimension.Text = "1024";
+            toolTip1.SetToolTip(tb_ImageMaxDimension, "The image is downscaled so neither side is larger than this before it is sent, to control cost.");
+            //
+            // lbl_Prompt
+            //
+            lbl_Prompt.AutoSize = true;
+            lbl_Prompt.Location = new System.Drawing.Point(8, 74);
+            lbl_Prompt.Name = "lbl_Prompt";
+            lbl_Prompt.Size = new System.Drawing.Size(45, 13);
+            lbl_Prompt.TabIndex = 8;
+            lbl_Prompt.Text = "Prompt:";
+            //
+            // tb_Prompt
+            //
+            tb_Prompt.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            tb_Prompt.Font = new System.Drawing.Font("Consolas", 8.25F);
+            tb_Prompt.Location = new System.Drawing.Point(8, 90);
+            tb_Prompt.Multiline = true;
+            tb_Prompt.Name = "tb_Prompt";
+            tb_Prompt.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            tb_Prompt.Size = new System.Drawing.Size(620, 50);
+            tb_Prompt.TabIndex = 9;
+            toolTip1.SetToolTip(tb_Prompt, "Asks the model to respond with strict JSON: {\"description\":\"...\",\"objects\":[{\"label\":\"person\",\"detail\":\"...\",\"confidence\":0.9,\"box\":[x_min,y_min,x_max,y_max]}]}");
+            //
             // Frm_AIServerDeepstackEdit
-            // 
+            //
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
             AutoScroll = true;
-            ClientSize = new System.Drawing.Size(649, 570);
+            ClientSize = new System.Drawing.Size(649, 733);
             Controls.Add(bt_Save);
             Controls.Add(bt_clear);
             Controls.Add(btTest);
             Controls.Add(linkHelpURL);
+            Controls.Add(groupBoxVisionLlm);
             Controls.Add(groupBox1);
             Font = new System.Drawing.Font("Segoe UI", 8.25F);
             Name = "Frm_AIServerDeepstackEdit";
@@ -693,6 +820,8 @@ namespace AITool
             groupBoxLinked.PerformLayout();
             groupBoxRefine.ResumeLayout(false);
             groupBoxRefine.PerformLayout();
+            groupBoxVisionLlm.ResumeLayout(false);
+            groupBoxVisionLlm.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -753,5 +882,16 @@ namespace AITool
         private System.Windows.Forms.Label lbl_ImgQueueStats;
         private System.Windows.Forms.Label lbl_QueueTimeStats;
         private System.Windows.Forms.Timer timer1;
+        private System.Windows.Forms.GroupBox groupBoxVisionLlm;
+        private System.Windows.Forms.Label lbl_ApiKey;
+        public System.Windows.Forms.TextBox tb_ApiKey;
+        private System.Windows.Forms.Label lbl_ModelName;
+        public System.Windows.Forms.TextBox tb_ModelName;
+        private System.Windows.Forms.Label lbl_MaxTokens;
+        public System.Windows.Forms.TextBox tb_MaxTokens;
+        private System.Windows.Forms.Label lbl_ImageMaxDimension;
+        public System.Windows.Forms.TextBox tb_ImageMaxDimension;
+        private System.Windows.Forms.Label lbl_Prompt;
+        public System.Windows.Forms.TextBox tb_Prompt;
     }
 }

@@ -7,6 +7,9 @@ using System.Runtime.Versioning;
 // Without it the platform-compat analyzer flags every WinForms call with CA1416.
 [assembly: SupportedOSPlatform("windows")]
 
+// Lets AITool.Tests unit test internal helpers (eg VisionLlmProvider's request/response building) without making them public API.
+[assembly: InternalsVisibleTo("AITool.Tests")]
+
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
