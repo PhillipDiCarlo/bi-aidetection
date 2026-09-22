@@ -1,4 +1,6 @@
-﻿using System;
+﻿using MQTTnet;
+using MQTTnet.Protocol;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -14,7 +16,6 @@ using System.Reflection;
 using System.Speech.Synthesis;
 using System.Threading.Tasks;
 
-using MQTTnet.Client;
 
 using NPushover.RequestObjects;
 using NPushover.ResponseObjects;

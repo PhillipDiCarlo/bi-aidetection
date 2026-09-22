@@ -1,5 +1,4 @@
 ﻿using MQTTnet;
-using MQTTnet.Client;
 //using MQTTnet.Client.Connecting;
 //using MQTTnet.Client.Options;
 //using MQTTnet.Client.Publishing;
@@ -29,7 +28,7 @@ namespace AITool
         string LastPayload = "";
         bool LastRetain = false;
 
-        MqttFactory factory = null;
+        MqttClientFactory factory = null;
         IMqttClient mqttClient = null;
         MqttClientOptions options = null;
         MqttClientConnectResult cres = null;
@@ -75,7 +74,7 @@ namespace AITool
 
             try
             {
-                this.factory = new MqttFactory();
+                this.factory = new MqttClientFactory();
                 this.mqttClient = factory.CreateMqttClient();
 
             }
@@ -131,7 +130,7 @@ namespace AITool
                 var lw = new MqttApplicationMessage()
                 {
                     Topic = AppSettings.Settings.mqtt_LastWillTopic,
-                    Payload = Encoding.UTF8.GetBytes(AppSettings.Settings.mqtt_LastWillPayload),
+                    PayloadSegment = Encoding.UTF8.GetBytes(AppSettings.Settings.mqtt_LastWillPayload),
                     QualityOfServiceLevel = MqttQualityOfServiceLevel.AtLeastOnce,
                     Retain = true
                 };
@@ -143,9 +142,9 @@ namespace AITool
 
                         options = new MqttClientOptionsBuilder()
                             .WithClientId(AppSettings.Settings.mqtt_clientid)
-                            .WithWebSocketServer(AppSettings.Settings.mqtt_serverandport)
+                            .WithWebSocketServer(o => o.WithUri(AppSettings.Settings.mqtt_serverandport))
                             .WithCredentials(AppSettings.Settings.mqtt_username, AppSettings.Settings.mqtt_password)
-                            .WithTls()
+                            .WithTlsOptions(o => o.UseTls())
                             .WithWillTopic(AppSettings.Settings.mqtt_LastWillTopic)
                             .WithWillPayload(Encoding.UTF8.GetBytes(AppSettings.Settings.mqtt_LastWillPayload))
                             .WithWillRetain(true)
@@ -160,7 +159,7 @@ namespace AITool
                             .WithClientId(AppSettings.Settings.mqtt_clientid)
                             .WithTcpServer(server, portint)
                             .WithCredentials(AppSettings.Settings.mqtt_username, AppSettings.Settings.mqtt_password)
-                            .WithTls()
+                            .WithTlsOptions(o => o.UseTls())
                             .WithWillTopic(AppSettings.Settings.mqtt_LastWillTopic)
                             .WithWillPayload(Encoding.UTF8.GetBytes(AppSettings.Settings.mqtt_LastWillPayload))
                             .WithWillRetain(true)
@@ -177,7 +176,7 @@ namespace AITool
                     {
                         options = new MqttClientOptionsBuilder()
                         .WithClientId(AppSettings.Settings.mqtt_clientid)
-                        .WithWebSocketServer(AppSettings.Settings.mqtt_serverandport)
+                        .WithWebSocketServer(o => o.WithUri(AppSettings.Settings.mqtt_serverandport))
                         .WithCredentials(AppSettings.Settings.mqtt_username, AppSettings.Settings.mqtt_password)
                             .WithWillTopic(AppSettings.Settings.mqtt_LastWillTopic)
                             .WithWillPayload(Encoding.UTF8.GetBytes(AppSettings.Settings.mqtt_LastWillPayload))

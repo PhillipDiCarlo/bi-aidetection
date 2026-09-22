@@ -1,4 +1,4 @@
-﻿using MQTTnet.Client; //.Publishing;
+﻿using MQTTnet;
 
 using System;
 using System.Collections.Generic;
