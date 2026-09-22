@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.ML.OnnxRuntime;
@@ -22,6 +23,10 @@ namespace AITool.AIProviders
         private static readonly ConcurrentDictionary<string, Lazy<InferenceSession>> Sessions = new ConcurrentDictionary<string, Lazy<InferenceSession>>(StringComparer.OrdinalIgnoreCase);
         private static readonly ConcurrentDictionary<string, List<string>> ClassNamesCache = new ConcurrentDictionary<string, List<string>>(StringComparer.OrdinalIgnoreCase);
 
+        //Only one default-model download should run at a time - other callers that race in just wait for it to finish.
+        private static readonly SemaphoreSlim DownloadLock = new SemaphoreSlim(1, 1);
+        private const long MinModelFileSizeBytes = 1_000_000; //1MB - a truncated/failed download will be much smaller than the real ~6MB yolov8n.onnx
+
         private const float NmsIouThreshold = 0.45f;
         private const float DefaultConfThreshold = 0.25f;
 
@@ -38,9 +43,21 @@ namespace AITool.AIProviders
             {
                 string modelPath = AiUrl.url;
 
+                if (modelPath.IsNotEmpty() && !File.Exists(modelPath) && modelPath.Equals(AppSettings.Settings.OnnxDefaultModelPath, StringComparison.OrdinalIgnoreCase))
+                {
+                    string downloadError = await EnsureDefaultModelDownloadedAsync(modelPath, ct);
+                    if (downloadError.IsNotEmpty())
+                    {
+                        ret.Error = $"ERROR: ONNX model file not found: '{modelPath}'. Export one (e.g. with Ultralytics: 'pip install ultralytics' then 'yolo export model=yolo11n.pt format=onnx') and set this AI server's URL field to the path of the resulting .onnx file. Also tried to auto-download the default model but failed: {downloadError}";
+                        AiUrl.IncrementError();
+                        AiUrl.LastResultMessage = ret.Error;
+                        return ret;
+                    }
+                }
+
                 if (modelPath.IsEmpty() || !File.Exists(modelPath))
                 {
-                    ret.Error = $"ERROR: ONNX model file not found: '{modelPath}'. Export one (e.g. with Ultralytics: 'pip install ultralytics' then 'yolo export model=yolo11n.pt format=onnx') and set this AI server's URL field to the path of the resulting .onnx file.";
+                    ret.Error = $"ERROR: ONNX model file not found: '{modelPath}'. The default model downloads automatically the first time it's needed - see docs/local-detection.md. To use a different model, export one (e.g. with Ultralytics: 'pip install ultralytics' then 'yolo export model=yolo11n.pt format=onnx') and set this AI server's URL field to the path of the resulting .onnx file.";
                     AiUrl.IncrementError();
                     AiUrl.LastResultMessage = ret.Error;
                     return ret;
@@ -131,6 +148,63 @@ namespace AITool.AIProviders
             }
 
             return ret;
+        }
+
+        //Downloads AppSettings.Settings.OnnxDefaultModelUrl to modelPath if it's still missing once this call gets the lock (another
+        //thread may have already finished it while we were waiting). Returns "" on success, or an error message on failure.
+        private static async Task<string> EnsureDefaultModelDownloadedAsync(string modelPath, CancellationToken ct)
+        {
+            await DownloadLock.WaitAsync(ct);
+            try
+            {
+                if (File.Exists(modelPath) && new FileInfo(modelPath).Length > MinModelFileSizeBytes)
+                    return "";
+
+                string modelUrl = AppSettings.Settings.OnnxDefaultModelUrl;
+                if (modelUrl.IsEmpty())
+                    return "OnnxDefaultModelUrl is not set.";
+
+                string tempPath = modelPath + ".download";
+
+                try
+                {
+                    Log($"Debug: Default ONNX model not found at '{modelPath}', downloading from '{modelUrl}'...");
+
+                    Directory.CreateDirectory(Path.GetDirectoryName(modelPath));
+
+                    using (HttpClient client = new HttpClient { Timeout = TimeSpan.FromMinutes(10) })
+                    using (HttpResponseMessage response = await client.GetAsync(modelUrl, HttpCompletionOption.ResponseHeadersRead, ct))
+                    {
+                        response.EnsureSuccessStatusCode();
+
+                        using Stream httpStream = await response.Content.ReadAsStreamAsync(ct);
+                        using FileStream fileStream = new FileStream(tempPath, FileMode.Create, FileAccess.Write);
+                        await httpStream.CopyToAsync(fileStream, ct);
+                    }
+
+                    long size = new FileInfo(tempPath).Length;
+                    if (size < MinModelFileSizeBytes)
+                    {
+                        File.Delete(tempPath);
+                        return $"Downloaded file was too small ({size} bytes) - the download likely failed.";
+                    }
+
+                    File.Move(tempPath, modelPath, true);
+
+                    Log($"Debug: Downloaded default ONNX model to '{modelPath}' ({size / 1024 / 1024}MB).");
+
+                    return "";
+                }
+                catch (Exception ex)
+                {
+                    try { if (File.Exists(tempPath)) File.Delete(tempPath); } catch { /* best effort cleanup */ }
+                    return ex.Msg();
+                }
+            }
+            finally
+            {
+                DownloadLock.Release();
+            }
         }
 
         private static InferenceSession GetOrCreateSession(string modelPath, bool useGpu)

@@ -962,13 +962,25 @@ namespace AITool
             }
 
 
-            //add a default DeepStack server if none found
-            //if (AppSettings.Settings.AIURLList.Count == 0)
-            //{
-            //    Log($"Debug: ----   Adding default Deepstack AI Server URL.");
-            //    AppSettings.Settings.AIURLList.Add(new ClsURLItem("", 1, 1, URLTypeEnum.DeepStack));
-            //}
+            //add a default in-process Local_ONNX server if none found at all, so detection works out of the box on a fresh install
+            AddDefaultLocalOnnxServerIfEmpty(AppSettings.Settings.AIURLList, AppSettings.Settings.OnnxDefaultModelPath);
 
+        }
+
+        //Factored out of UpdateAIURLList so it can be unit tested without the rest of the settings/load machinery.
+        //Only touches AIURLList when it is completely empty (a fresh install) - never overrides a user's existing servers.
+        public static bool AddDefaultLocalOnnxServerIfEmpty(List<ClsURLItem> AIURLList, string DefaultModelPath)
+        {
+            if (AIURLList.Count > 0 || DefaultModelPath.IsEmpty())
+                return false;
+
+            Log("Debug: ----   No AI servers configured - adding default in-process 'Local YOLO (built-in)' server so detection works out of the box.");
+
+            ClsURLItem url = new ClsURLItem(DefaultModelPath, 1, URLTypeEnum.Local_ONNX);
+            url.Name = "Local YOLO (built-in)";
+            AIURLList.Add(url);
+
+            return true;
         }
 
         public static async Task<List<ClsURLItem>> WaitForNextURL(Camera cam, bool GetRefinementServer, List<ClsPrediction> predictions = null, string RequiredLinkURLList = "", List<ClsURLItem> MainURLs = null)

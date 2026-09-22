@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using System.Net.Http;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,10 +12,12 @@ namespace AITool.Tests;
 
 /// <summary>
 /// Runs the real ONNX Runtime pipeline end to end against a real model - unlike YoloPostProcessorTests,
-/// which only exercises the pure math. There's no official Ultralytics ONNX download, so this pulls a
-/// community-hosted export of the stock (80-class COCO) yolov8n model into the temp dir on first run.
-/// If that download fails (offline machine, host unreachable, CI with no network), the tests no-op
-/// instead of failing - there's no xunit "Skip" mechanism wired into this project.
+/// which only exercises the pure math. There's no official Ultralytics ONNX download, so this points
+/// AppSettings.Settings.OnnxDefaultModel{Url,Path} at a community-hosted export of the stock (80-class
+/// COCO) yolov8n model and a temp dir, and lets OnnxYoloProvider.DetectAsync download it itself on first
+/// use - the same auto-download path a fresh install exercises, rather than duplicating the download
+/// logic here. If that download fails (offline machine, host unreachable, CI with no network), the tests
+/// no-op instead of failing - there's no xunit "Skip" mechanism wired into this project.
 /// </summary>
 public class OnnxYoloProviderIntegrationTests
 {
@@ -27,39 +28,35 @@ public class OnnxYoloProviderIntegrationTests
         this.output = output;
     }
 
-    private const string ModelUrl = "https://huggingface.co/kshitijjjjjjjjjjjjjjjj/yolov8n-coco-onnx/resolve/main/yolov8n.onnx";
     private static readonly string ModelPath = Path.Combine(Path.GetTempPath(), "AITool.Tests.OnnxYolo", "yolov8n.onnx");
 
-    private static async Task<bool> EnsureModelAsync()
+    //Points the default-model settings at the temp-dir path used by these tests, so OnnxYoloProvider's
+    //auto-download kicks in for a model path that equals AppSettings.Settings.OnnxDefaultModelPath.
+    private static void ConfigureDefaultModelSettings()
     {
-        if (File.Exists(ModelPath) && new FileInfo(ModelPath).Length > 1_000_000)
-            return true;
+        AppSettings.Settings.OnnxDefaultModelUrl = "https://huggingface.co/kshitijjjjjjjjjjjjjjjj/yolov8n-coco-onnx/resolve/main/yolov8n.onnx";
+        AppSettings.Settings.OnnxDefaultModelPath = ModelPath;
+    }
 
-        try
-        {
-            Directory.CreateDirectory(Path.GetDirectoryName(ModelPath)!);
-            using HttpClient client = new HttpClient { Timeout = TimeSpan.FromSeconds(30) };
-            byte[] bytes = await client.GetByteArrayAsync(ModelUrl);
-            await File.WriteAllBytesAsync(ModelPath, bytes);
-            return true;
-        }
-        catch
-        {
-            return false;
-        }
+    //Auto-download failure (no network) isn't a code bug - treat it as skipped, same as the old EnsureModelAsync() did.
+    private static bool IsDownloadFailure(ClsAIServerResponse result)
+    {
+        return !result.Success && result.Error != null && result.Error.Contains("auto-download the default model but failed", StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
     public async Task DetectAsync_FindsAPersonInTestImage()
     {
-        if (!await EnsureModelAsync())
-            return; //no model available - treat as skipped rather than failed
+        ConfigureDefaultModelSettings();
 
         ClsURLItem url = new ClsURLItem(ModelPath, 1, URLTypeEnum.Local_ONNX);
         Camera cam = new Camera("default"); //avoids ClsRelevantObjectManager's Reset()/Update() recursion, which needs a populated camera list to terminate for any other name
         using ClsImageQueueItem img = new ClsImageQueueItem(GetTestImagePath("TestImage.jpg"), 0);
 
         ClsAIServerResponse result = await new OnnxYoloProvider().DetectAsync(img, url, cam, CancellationToken.None);
+
+        if (IsDownloadFailure(result))
+            return;
 
         LogPredictions(result);
         Assert.True(result.Success, result.Error);
@@ -69,14 +66,16 @@ public class OnnxYoloProviderIntegrationTests
     [Fact]
     public async Task DetectAsync_FindsAVehicleInTestVehicleImage()
     {
-        if (!await EnsureModelAsync())
-            return;
+        ConfigureDefaultModelSettings();
 
         ClsURLItem url = new ClsURLItem(ModelPath, 1, URLTypeEnum.Local_ONNX);
         Camera cam = new Camera("default");
         using ClsImageQueueItem img = new ClsImageQueueItem(GetTestImagePath("TestVehicleImage.jpg"), 0);
 
         ClsAIServerResponse result = await new OnnxYoloProvider().DetectAsync(img, url, cam, CancellationToken.None);
+
+        if (IsDownloadFailure(result))
+            return;
 
         LogPredictions(result);
         Assert.True(result.Success, result.Error);

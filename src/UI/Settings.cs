@@ -210,6 +210,10 @@ namespace AITool
 
             public List<ClsURLItem> AIURLList = new List<ClsURLItem>();
 
+            //Used by OnnxYoloProvider to auto-download a default model so Local_ONNX detection works with no setup.
+            public string OnnxDefaultModelUrl = "https://huggingface.co/kshitijjjjjjjjjjjjjjjj/yolov8n-coco-onnx/resolve/main/yolov8n.onnx";
+            public string OnnxDefaultModelPath = ""; //resolved at runtime to "<settings folder>\models\yolov8n.onnx" - see LoadAsync()
+
             public List<ClsImageAdjust> ImageAdjustProfiles = new List<ClsImageAdjust> { new ClsImageAdjust("Default") };
 
             public int SaveSettingsIntervalSeconds = 30;
@@ -836,6 +840,9 @@ namespace AITool
 
                     //sort the camera list:
                     AppSettings.Settings.CameraList = AppSettings.Settings.CameraList.OrderBy((d) => d.Name).ToList();
+
+                    if (Settings.OnnxDefaultModelPath.IsEmpty())
+                        Settings.OnnxDefaultModelPath = Path.Combine(Path.GetDirectoryName(Settings.SettingsFileName), "models", "yolov8n.onnx");
 
                     AITOOL.UpdateAIURLList(true);
 

@@ -51,6 +51,7 @@ namespace AITool
                 this.bt_Browse.Visible = true;
                 this.cb_OnnxUseGpu.Visible = true;
                 this.cb_OnnxUseGpu.Checked = this.CurURL.OnnxUseGpu;
+                this.toolTip1.SetToolTip(this.tb_URL, $"If this path is left as the default ('{AppSettings.Settings.OnnxDefaultModelPath}'), the model is downloaded automatically the first time it's needed. To use a different model, export one (e.g. 'yolo export model=yolo11n.pt format=onnx') and Browse to it - see docs/local-detection.md.");
             }
             else
             {
