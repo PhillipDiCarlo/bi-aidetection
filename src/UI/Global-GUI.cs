@@ -1014,7 +1014,7 @@ namespace AITool
                 {
                     RetKey = "AWSRekognition" + png;
                 }
-                else if (url.Type == URLTypeEnum.DeepStack || url.Type == URLTypeEnum.DeepStack_Faces || url.Type == URLTypeEnum.DeepStack_Custom || url.Type == URLTypeEnum.DeepStack_Scene)
+                else if (url.Type == URLTypeEnum.DeepStack || url.Type == URLTypeEnum.DeepStack_Faces || url.Type == URLTypeEnum.DeepStack_Custom || url.Type == URLTypeEnum.DeepStack_Scene || url.Type == URLTypeEnum.Blue_Onyx)
                 {
                     RetKey = "Deepstack" + png;
                 }

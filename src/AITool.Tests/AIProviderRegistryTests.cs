@@ -11,6 +11,7 @@ public class AIProviderRegistryTests
     [InlineData(URLTypeEnum.CodeProject_AI_IPCAM_Combined, typeof(DeepStackCompatibleProvider))]
     [InlineData(URLTypeEnum.DeepStack, typeof(DeepStackCompatibleProvider))]
     [InlineData(URLTypeEnum.DeepStack_Faces, typeof(DeepStackCompatibleProvider))]
+    [InlineData(URLTypeEnum.Blue_Onyx, typeof(DeepStackCompatibleProvider))]
     [InlineData(URLTypeEnum.DOODS, typeof(DoodsProvider))]
     [InlineData(URLTypeEnum.SightHound_Person, typeof(SightHoundProvider))]
     [InlineData(URLTypeEnum.SightHound_Vehicle, typeof(SightHoundProvider))]

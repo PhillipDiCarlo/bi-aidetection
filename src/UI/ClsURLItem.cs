@@ -32,6 +32,7 @@ namespace AITool
         AWSRekognition_Faces,
         SightHound_Vehicle,
         SightHound_Person,
+        Blue_Onyx,
         Other,
         Unknown
     }
@@ -401,6 +402,12 @@ namespace AITool
                     this.IsLocalNetwork = false;
                     this.HttpClient = null;
                     this.MaxImagesPerMonth = 5000;
+                }
+                else if (this.Type == URLTypeEnum.Blue_Onyx)
+                {
+                    this.DefaultURL = "http://127.0.0.1:32168/v1/vision/detection";
+                    this.HelpURL = "https://github.com/xnorpx/blue-onyx";
+                    this.Type = URLTypeEnum.Blue_Onyx;
                 }
                 else if (this.Type == URLTypeEnum.CodeProject_AI || HasCP)
                 {

@@ -47,6 +47,7 @@ namespace AITool
             deepstackCustomToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             deepstackSceneToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             deepstackFacesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            blueOnyxToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             addDoodsServerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             addAmazonObjectsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             addAmazonFaceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -96,7 +97,7 @@ namespace AITool
             // 
             // toolStripSplitButtonAdd
             // 
-            toolStripSplitButtonAdd.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { codeProjectAIObjectsToolStripMenuItem, codeProjectAILicensePlateToolStripMenuItem, codeProjectAIFacesToolStripMenuItem, codeProjectAISceneToolStripMenuItem, codeProjectAICustomToolStripMenuItem, codeProjectAIIPCAMAnimalToolStripMenuItem, codeProjectAIIPCAMCombinedToolStripMenuItem, codeProjectAIIPCAMDarkToolStripMenuItem, codeProjectAIIPCAMGeneralToolStripMenuItem, deepstackObjectsToolStripMenuItem, deepstackCustomToolStripMenuItem, deepstackSceneToolStripMenuItem, deepstackFacesToolStripMenuItem, addDoodsServerToolStripMenuItem, addAmazonObjectsToolStripMenuItem, addAmazonFaceToolStripMenuItem, sightHoundVehicleAIServerToolStripMenuItem, sightHoundPersonAIServerToolStripMenuItem });
+            toolStripSplitButtonAdd.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { codeProjectAIObjectsToolStripMenuItem, codeProjectAILicensePlateToolStripMenuItem, codeProjectAIFacesToolStripMenuItem, codeProjectAISceneToolStripMenuItem, codeProjectAICustomToolStripMenuItem, codeProjectAIIPCAMAnimalToolStripMenuItem, codeProjectAIIPCAMCombinedToolStripMenuItem, codeProjectAIIPCAMDarkToolStripMenuItem, codeProjectAIIPCAMGeneralToolStripMenuItem, deepstackObjectsToolStripMenuItem, deepstackCustomToolStripMenuItem, deepstackSceneToolStripMenuItem, deepstackFacesToolStripMenuItem, blueOnyxToolStripMenuItem, addDoodsServerToolStripMenuItem, addAmazonObjectsToolStripMenuItem, addAmazonFaceToolStripMenuItem, sightHoundVehicleAIServerToolStripMenuItem, sightHoundPersonAIServerToolStripMenuItem });
             toolStripSplitButtonAdd.Image = (System.Drawing.Image)resources.GetObject("toolStripSplitButtonAdd.Image");
             toolStripSplitButtonAdd.ImageTransparentColor = System.Drawing.Color.Magenta;
             toolStripSplitButtonAdd.Name = "toolStripSplitButtonAdd";
@@ -211,7 +212,16 @@ namespace AITool
             deepstackFacesToolStripMenuItem.Text = "Deepstack (Faces) AI Server";
             deepstackFacesToolStripMenuItem.ToolTipText = "Face detection";
             deepstackFacesToolStripMenuItem.Click += deepstackFacesToolStripMenuItem_Click;
-            // 
+            //
+            // blueOnyxToolStripMenuItem
+            //
+            blueOnyxToolStripMenuItem.Image = Properties.Resources.network_server;
+            blueOnyxToolStripMenuItem.Name = "blueOnyxToolStripMenuItem";
+            blueOnyxToolStripMenuItem.Size = new System.Drawing.Size(273, 30);
+            blueOnyxToolStripMenuItem.Text = "Blue Onyx AI Server";
+            blueOnyxToolStripMenuItem.ToolTipText = "DeepStack-compatible object detection using Blue Onyx (Rust, ONNX Runtime).";
+            blueOnyxToolStripMenuItem.Click += blueOnyxToolStripMenuItem_Click;
+            //
             // addDoodsServerToolStripMenuItem
             // 
             addDoodsServerToolStripMenuItem.Image = Properties.Resources.network_server;
@@ -369,6 +379,7 @@ namespace AITool
         private System.Windows.Forms.ToolStripMenuItem deepstackCustomToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem deepstackFacesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem deepstackSceneToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem blueOnyxToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem codeProjectAIObjectsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem codeProjectAIFacesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem codeProjectAICustomToolStripMenuItem;

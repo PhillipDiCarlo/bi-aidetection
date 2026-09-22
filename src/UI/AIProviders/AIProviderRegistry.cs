@@ -25,6 +25,7 @@ namespace AITool.AIProviders
             { URLTypeEnum.DeepStack_Faces, DeepStackCompatible },
             { URLTypeEnum.DeepStack_Custom, DeepStackCompatible },
             { URLTypeEnum.DeepStack_Scene, DeepStackCompatible },
+            { URLTypeEnum.Blue_Onyx, DeepStackCompatible },
             { URLTypeEnum.DOODS, Doods },
             { URLTypeEnum.AWSRekognition_Objects, AwsRekognition },
             { URLTypeEnum.AWSRekognition_Faces, AwsRekognition },
