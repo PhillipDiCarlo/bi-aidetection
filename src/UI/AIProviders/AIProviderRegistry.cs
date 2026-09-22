@@ -10,6 +10,7 @@ namespace AITool.AIProviders
         private static readonly IAIProvider Doods = new DoodsProvider();
         private static readonly IAIProvider AwsRekognition = new AwsRekognitionProvider();
         private static readonly IAIProvider VisionLlm = new VisionLlmProvider();
+        private static readonly IAIProvider OnnxYolo = new OnnxYoloProvider();
 
         private static readonly Dictionary<URLTypeEnum, IAIProvider> Providers = new Dictionary<URLTypeEnum, IAIProvider>
         {
@@ -26,6 +27,7 @@ namespace AITool.AIProviders
             { URLTypeEnum.DeepStack_Faces, DeepStackCompatible },
             { URLTypeEnum.DeepStack_Custom, DeepStackCompatible },
             { URLTypeEnum.DeepStack_Scene, DeepStackCompatible },
+            { URLTypeEnum.Blue_Onyx, DeepStackCompatible },
             { URLTypeEnum.DOODS, Doods },
             { URLTypeEnum.AWSRekognition_Objects, AwsRekognition },
             { URLTypeEnum.AWSRekognition_Faces, AwsRekognition },
@@ -33,6 +35,7 @@ namespace AITool.AIProviders
             { URLTypeEnum.SightHound_Person, SightHound },
             { URLTypeEnum.OpenAI_Vision, VisionLlm },
             { URLTypeEnum.Anthropic_Vision, VisionLlm },
+            { URLTypeEnum.Local_ONNX, OnnxYolo },
         };
 
         /// <summary>Returns null for types with no backend implementation (Other, Unknown).</summary>

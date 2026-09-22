@@ -131,6 +131,26 @@ namespace AITool
 
         }
 
+        private void blueOnyxToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            using Working w = new Working();
+            ClsURLItem url = new ClsURLItem("", AppSettings.Settings.AIURLList.Count + 1, URLTypeEnum.Blue_Onyx);
+            this.CurURL = url;
+            AppSettings.Settings.AIURLList.Add(url);
+            Global_GUI.UpdateFOLV(FOLV_AIServers, AppSettings.Settings.AIURLList, UseSelected: true, SelectObject: this.CurURL, FullRefresh: true);
+            UpdateButtons();
+        }
+
+        private void localOnnxToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            using Working w = new Working();
+            ClsURLItem url = new ClsURLItem("", AppSettings.Settings.AIURLList.Count + 1, URLTypeEnum.Local_ONNX);
+            this.CurURL = url;
+            AppSettings.Settings.AIURLList.Add(url);
+            Global_GUI.UpdateFOLV(FOLV_AIServers, AppSettings.Settings.AIURLList, UseSelected: true, SelectObject: this.CurURL, FullRefresh: true);
+            UpdateButtons();
+        }
+
         private void addDoodsServerToolStripMenuItem_Click(object sender, EventArgs e)
         {
             using Working w = new Working();

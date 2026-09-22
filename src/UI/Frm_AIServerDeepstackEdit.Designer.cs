@@ -35,6 +35,7 @@ namespace AITool
             label2 = new System.Windows.Forms.Label();
             lbl_type = new System.Windows.Forms.Label();
             tb_URL = new System.Windows.Forms.TextBox();
+            bt_Browse = new System.Windows.Forms.Button();
             bt_Save = new System.Windows.Forms.Button();
             label4 = new System.Windows.Forms.Label();
             tb_ActiveTimeRange = new System.Windows.Forms.TextBox();
@@ -55,6 +56,7 @@ namespace AITool
             label17 = new System.Windows.Forms.Label();
             label16 = new System.Windows.Forms.Label();
             cb_IgnoreOffline = new System.Windows.Forms.CheckBox();
+            cb_OnnxUseGpu = new System.Windows.Forms.CheckBox();
             tb_Name = new System.Windows.Forms.TextBox();
             label14 = new System.Windows.Forms.Label();
             cb_OnlyLinked = new System.Windows.Forms.CheckBox();
@@ -138,10 +140,22 @@ namespace AITool
             tb_URL.Font = new System.Drawing.Font("Consolas", 8.25F);
             tb_URL.Location = new System.Drawing.Point(121, 60);
             tb_URL.Name = "tb_URL";
-            tb_URL.Size = new System.Drawing.Size(508, 20);
+            tb_URL.Size = new System.Drawing.Size(428, 20);
             tb_URL.TabIndex = 1;
             tb_URL.TextChanged += tb_URL_TextChanged;
-            // 
+            //
+            // bt_Browse
+            //
+            bt_Browse.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            bt_Browse.Location = new System.Drawing.Point(554, 59);
+            bt_Browse.Name = "bt_Browse";
+            bt_Browse.Size = new System.Drawing.Size(75, 23);
+            bt_Browse.TabIndex = 18;
+            bt_Browse.Text = "Browse...";
+            bt_Browse.UseVisualStyleBackColor = true;
+            bt_Browse.Visible = false;
+            bt_Browse.Click += bt_Browse_Click;
+            //
             // bt_Save
             // 
             bt_Save.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
@@ -208,6 +222,7 @@ namespace AITool
             groupBox1.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             groupBox1.Controls.Add(gb_AIServerQueue);
             groupBox1.Controls.Add(cb_IgnoreOffline);
+            groupBox1.Controls.Add(cb_OnnxUseGpu);
             groupBox1.Controls.Add(tb_Name);
             groupBox1.Controls.Add(label14);
             groupBox1.Controls.Add(cb_OnlyLinked);
@@ -232,6 +247,7 @@ namespace AITool
             groupBox1.Controls.Add(label8);
             groupBox1.Controls.Add(label2);
             groupBox1.Controls.Add(tb_URL);
+            groupBox1.Controls.Add(bt_Browse);
             groupBox1.Controls.Add(labelTimeout);
             groupBox1.Controls.Add(label7);
             groupBox1.Controls.Add(label4);
@@ -381,7 +397,20 @@ namespace AITool
             cb_IgnoreOffline.Text = "Ignore if Offline";
             toolTip1.SetToolTip(cb_IgnoreOffline, "If we cant even ping the server (ie a machine is asleep part of the day) we ignore any errors and skip the URL.");
             cb_IgnoreOffline.UseVisualStyleBackColor = true;
-            // 
+            //
+            // cb_OnnxUseGpu
+            //
+            cb_OnnxUseGpu.AutoSize = true;
+            cb_OnnxUseGpu.ForeColor = System.Drawing.Color.DodgerBlue;
+            cb_OnnxUseGpu.Location = new System.Drawing.Point(300, 114);
+            cb_OnnxUseGpu.Name = "cb_OnnxUseGpu";
+            cb_OnnxUseGpu.Size = new System.Drawing.Size(160, 17);
+            cb_OnnxUseGpu.TabIndex = 23;
+            cb_OnnxUseGpu.Text = "Use GPU (DirectML)";
+            cb_OnnxUseGpu.Visible = false;
+            toolTip1.SetToolTip(cb_OnnxUseGpu, "Try DirectML (GPU) first, falling back to CPU if it isn't available.");
+            cb_OnnxUseGpu.UseVisualStyleBackColor = true;
+            //
             // tb_Name
             // 
             tb_Name.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
@@ -833,6 +862,7 @@ namespace AITool
         private System.Windows.Forms.Label lbl_type;
         private System.Windows.Forms.Button bt_Save;
         public System.Windows.Forms.TextBox tb_URL;
+        private System.Windows.Forms.Button bt_Browse;
         private System.Windows.Forms.Label label4;
         public System.Windows.Forms.TextBox tb_ActiveTimeRange;
         private System.Windows.Forms.Label label5;
@@ -869,6 +899,7 @@ namespace AITool
         private System.Windows.Forms.TextBox tb_Name;
         private System.Windows.Forms.Label label15;
         private System.Windows.Forms.CheckBox cb_IgnoreOffline;
+        private System.Windows.Forms.CheckBox cb_OnnxUseGpu;
         private System.Windows.Forms.CheckBox cb_AllowAIServerBasedQueue;
         private System.Windows.Forms.TextBox tb_MaxQueueLength;
         private System.Windows.Forms.Label label16;
