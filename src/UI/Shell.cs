@@ -3196,7 +3196,7 @@ namespace AITool
                     if (!Restart)
                         Global_GUI.SaveWindowState(this);
 
-                    AppSettings.SaveAsync(true);  //save settings in any case
+                    await AppSettings.SaveAsync(true);  //save settings in any case
 
                     //if (AITOOL.DeepStackServerControl.IsInstalled && AITOOL.DeepStackServerControl.IsStarted && AppSettings.Settings.deepstack_autostart)
                     //    await AITOOL.DeepStackServerControl.StopAsync();
@@ -3210,6 +3210,16 @@ namespace AITool
 
                     //wait a bit for the loops to cancel to avoid other threading errors on shutdown and to allow the logs to finish updating if we need to reset settings
                     Global.ResponsiveSleep(1000);
+
+                    try
+                    {
+                        // clean MQTT disconnect so the broker publishes our last-will/offline status right away
+                        await AITOOL.mqttClient.DisposeAsync();
+                    }
+                    catch (Exception ex)
+                    {
+                        Log($"Debug: MQTT disconnect on shutdown failed: {ex.Msg()}");
+                    }
 
                     if (Restart)
                         Application.Restart();

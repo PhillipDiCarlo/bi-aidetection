@@ -1458,11 +1458,6 @@ namespace AITool
 
                             if (ImageProcessQueue.TryDequeue(out CurImg))
                             {
-                                if (CurRunningDetectTasks > 1)
-                                {
-                                    int testing = 0;
-                                }
-
                                 Camera cam = GetCamera(CurImg.image_path, true);
 
                                 if (cam == null)

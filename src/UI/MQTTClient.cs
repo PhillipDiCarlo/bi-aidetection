@@ -16,7 +16,7 @@ using static AITool.AITOOL;
 
 namespace AITool
 {
-    public class MQTTClient:IDisposable
+    public class MQTTClient : IDisposable, IAsyncDisposable
     {
         public bool IsSubscribed = false;
         public bool IsConnected = false;
@@ -33,7 +33,13 @@ namespace AITool
         MqttClientOptions options = null;
         MqttClientConnectResult cres = null;
 
-        public async void Dispose()
+        public void Dispose()
+        {
+            // Synchronous fallback; prefer DisposeAsync so the broker receives a clean disconnect.
+            DisposeAsync().AsTask().GetAwaiter().GetResult();
+        }
+
+        public async ValueTask DisposeAsync()
         {
 
             if (mqttClient != null)
