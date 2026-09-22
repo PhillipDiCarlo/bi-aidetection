@@ -39,12 +39,12 @@ Goal: a fresh `git clone` builds with one command, has no known-vulnerable packa
 
 Goal: adding a new AI backend or notification channel means adding one class, not editing a 900-line method. Secrets are never on disk in plaintext. No user-visible behavior changes.
 
-- [ ] **1.1 Extract `IAIProvider`.** `AITOOL.GetDetectionsFromAIServer` dispatches on `AiUrl.Type.ToString().Has("codeproject")` etc. Create `src/UI/AIProviders/` with one class per backend implementing `Task<ClsAIServerResponse> DetectAsync(ClsImageQueueItem img, ClsURLItem url, Camera cam, CancellationToken ct)`:
-  - [ ] `DeepStackCompatibleProvider` (CodeProject.AI, DeepStack, Blue Onyx — all speak the same `/v1/vision/*` API)
-  - [ ] `DoodsProvider`
-  - [ ] `SightHoundProvider`
-  - [ ] `AwsRekognitionProvider`
-  - [ ] Registry keyed on `URLTypeEnum`; `GetDetectionsFromAIServer` becomes a lookup + call.
+- [x] **1.1 Extract `IAIProvider`.** `AITOOL.GetDetectionsFromAIServer` dispatches on `AiUrl.Type.ToString().Has("codeproject")` etc. Create `src/UI/AIProviders/` with one class per backend implementing `Task<ClsAIServerResponse> DetectAsync(ClsImageQueueItem img, ClsURLItem url, Camera cam, CancellationToken ct)`:
+  - [x] `DeepStackCompatibleProvider` (CodeProject.AI, DeepStack, Blue Onyx — all speak the same `/v1/vision/*` API)
+  - [x] `DoodsProvider`
+  - [x] `SightHoundProvider`
+  - [x] `AwsRekognitionProvider`
+  - [x] Registry keyed on `URLTypeEnum`; `GetDetectionsFromAIServer` becomes a lookup + call.
 - [ ] **1.2 Extract `INotificationChannel`.** Same treatment for `ClsTriggerActionQueue`: Telegram, Pushover, MQTT, trigger/cancel URL, sound, run-program, image-copy each become a class with `Task SendAsync(...)` / `Task CancelAsync(...)`.
 - [ ] **1.3 Encrypt all secrets at rest.** Only the Blue Iris password uses DPAPI today. Apply the existing `.Encrypt()`/`.Decrypt()` to `telegram_token`, `mqtt_password`, `pushover_APIKey`, `pushover_UserKey`, `AmazonSecretKey`, `SightHoundAPIKey`, `deepstack_adminkey`, `deepstack_apikey`. Migrate plaintext values on first load.
 - [ ] **1.4 Blue Iris JSON API client.** Replace `user=&pw=` query-string credentials in trigger URLs with session login via `/json` (`login` → MD5(session:user:pw) → `trigger`, `alertlist`, `camlist`). Keep the legacy URL action working for people with custom URLs.
