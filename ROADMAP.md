@@ -10,28 +10,28 @@ Check items off as they land. Keep this file current — it is the source of tru
 
 Goal: a fresh `git clone` builds with one command, has no known-vulnerable packages, and is on a supported runtime. No behavior changes.
 
-- [ ] **0.1 Fix the ObjectListView dependency.** `src/UI/UI.csproj` references `..\..\..\ObjectListView.NET6\...` outside the repo. Replace with a NuGet package (e.g. `ObjectListView.Repack.NET6Plus`) or vendor the source into `src/`.
-- [ ] **0.2 Fix the pre/post-build events.** `CleanOldInstalls.bat` and `BUILD.bat` (Inno Setup) run on every build via `$(SolutionDir)`, which is empty when building the project directly. Remove them from the csproj; installer creation becomes a separate script / CI job (see 0.7).
-- [ ] **0.3 Delete dead projects and code.**
+- [x] **0.1 Fix the ObjectListView dependency.** `src/UI/UI.csproj` references `..\..\..\ObjectListView.NET6\...` outside the repo. Replace with a NuGet package (e.g. `ObjectListView.Repack.NET6Plus`) or vendor the source into `src/`.
+- [x] **0.2 Fix the pre/post-build events.** `CleanOldInstalls.bat` and `BUILD.bat` (Inno Setup) run on every build via `$(SolutionDir)`, which is empty when building the project directly. Remove them from the csproj; installer creation becomes a separate script / CI job (see 0.7).
+- [x] **0.3 Delete dead projects and code.**
   - `src/AITool.Service/` — .NET Framework 4.7.2 stub with empty `OnStart`/`OnStop` and a missing `..\packages` folder.
   - `src/ThreadSafeTesting/` — ad-hoc test harness, not a real test project.
   - Files excluded from compile but still in the tree: `NamedPipeWrapper\**`, `RichTextBoxEx.cs`, `ThreadSafe_OLD.cs`, `BlueIrisControl.cs`.
   - Rename `bi-aidetection.NET6.sln` → `bi-aidetection.sln`.
-- [ ] **0.4 Remove binaries from git.** `src/AITool.Setup/INNO/` (~15 MB Inno Setup compiler) and `src/UI/Installer/AIToolSetup.*.exe` (19 MB). Installers ship via GitHub Releases; Inno Setup is installed on the build machine / CI runner.
-- [ ] **0.5 Update NuGet packages.** Vulnerable ones first, then everything else. Drop shim packages that are in-box on modern .NET (`System.Buffers`, `System.Memory`, `System.ValueTuple`, `System.Numerics.Vectors`, `System.Threading.Tasks.Extensions`, `NETStandard.Library`, `Microsoft.CSharp`).
-  - [ ] `SixLabors.ImageSharp` 3.1.4 → 4.x (2 high + 2 moderate CVEs)
-  - [ ] `SQLitePCLRaw.lib.e_sqlite3` 2.1.8 → 3.x (high CVE)
-  - [ ] `Telegram.Bot` 19 → 22 (breaking API)
-  - [ ] `MQTTnet` 4 → 5 (breaking API)
-  - [ ] `AWSSDK.Rekognition` 3 → 4 (breaking API)
-  - [ ] `NLog` 5 → 6, `Octokit` 11 → 14, `Markdig`, `NAudio.*`, `WindowsAPICodePack`, `WinForms.DataVisualization`, `Angle`, `SolarCalculator`, `System.Management`, `System.Speech`
-- [ ] **0.6 Retarget to .NET 10 LTS.** .NET 8 leaves support 2026-11-10. Update `TargetFramework`, the installer's runtime check, and the README download link.
-- [ ] **0.7 Add GitHub Actions.**
-  - [ ] `build.yml` — restore + build on every push/PR.
-  - [ ] `release.yml` — on tag, build, run Inno Setup, attach installer to a GitHub Release. The in-app update checker already reads Releases via Octokit.
-  - [ ] `dependabot.yml` — weekly NuGet + Actions updates.
-- [ ] **0.8 Add a test project** (`src/AITool.Tests/`, xUnit) with a handful of tests around pure logic to seed it: `RectangleMatches`, `RemovePredictionDuplicates`, `ReplaceParams`, mask hit-testing. Wire into `build.yml`.
-- [ ] **0.9 Docs.** Add `CHANGELOG.md` (seed from recent commit messages), update `README.md` (build instructions, supported backends, runtime requirement), keep `mqtt.md`.
+- [x] **0.4 Remove binaries from git.** `src/AITool.Setup/INNO/` (~15 MB Inno Setup compiler) and `src/UI/Installer/AIToolSetup.*.exe` (19 MB). Installers ship via GitHub Releases; Inno Setup is installed on the build machine / CI runner.
+- [x] **0.5 Update NuGet packages.** _Note: ImageSharp is pinned to 3.1.x because 4.x requires a paid license key for Release builds._ Vulnerable ones first, then everything else. Drop shim packages that are in-box on modern .NET (`System.Buffers`, `System.Memory`, `System.ValueTuple`, `System.Numerics.Vectors`, `System.Threading.Tasks.Extensions`, `NETStandard.Library`, `Microsoft.CSharp`).
+  - [x] `SixLabors.ImageSharp` 3.1.4 → 3.1.12 (2 high + 2 moderate CVEs)
+  - [x] `SQLitePCLRaw.lib.e_sqlite3` 2.1.8 → 3.x (high CVE)
+  - [x] `Telegram.Bot` 19 → 22 (breaking API)
+  - [x] `MQTTnet` 4 → 5 (breaking API)
+  - [x] `AWSSDK.Rekognition` 3 → 4 (breaking API)
+  - [x] `NLog` 5 → 6, `Octokit` 11 → 14, `Markdig`, `NAudio.*`, `WindowsAPICodePack`, `WinForms.DataVisualization`, `Angle`, `SolarCalculator`, `System.Management`, `System.Speech`
+- [x] **0.6 Retarget to .NET 10 LTS.** .NET 8 leaves support 2026-11-10. Update `TargetFramework`, the installer's runtime check, and the README download link.
+- [x] **0.7 Add GitHub Actions.**
+  - [x] `build.yml` — restore + build on every push/PR.
+  - [x] `release.yml` — on tag, build, run Inno Setup, attach installer to a GitHub Release. The in-app update checker already reads Releases via Octokit.
+  - [x] `dependabot.yml` — weekly NuGet + Actions updates.
+- [x] **0.8 Add a test project** (`src/AITool.Tests/`, xUnit) with a handful of tests around pure logic to seed it: `RectangleMatches`, `RemovePredictionDuplicates`, `ReplaceParams`, mask hit-testing. Wire into `build.yml`.
+- [x] **0.9 Docs.** Add `CHANGELOG.md` (seed from recent commit messages), update `README.md` (build instructions, supported backends, runtime requirement), keep `mqtt.md`.
 
 ---
 
