@@ -2761,6 +2761,9 @@ namespace AITool
                         if (cam.Action_CancelURL_Enabled && cam.cancel_urls.Length > 0)
                             cancelactions++;
 
+                        if (cam.Action_webhook_enabled && cam.Action_webhook_cancel_url.IsNotEmpty())
+                            cancelactions++;
+
                         //process the combined predictions
                         if (predictions.Count > 0)
                         {

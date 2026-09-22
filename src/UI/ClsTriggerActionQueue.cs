@@ -98,6 +98,7 @@ namespace AITool
                 new Actions.SoundAction(),
                 new Actions.RunProgramAction(),
                 new Actions.UrlAction(),
+                new Actions.WebhookAction(),
                 new Actions.MqttAction(),
                 this.Pushover,
                 this.Telegram,
@@ -124,7 +125,8 @@ namespace AITool
             //Make sure not to put cancel items in the queue if no cancel triggers are defined...
 
             bool HasCancel = ((AQI.cam.Action_mqtt_enabled && AQI.cam.Action_mqtt_payload_cancel.IsNotEmpty()) ||
-                               (AQI.cam.Action_CancelURL_Enabled && AQI.cam.cancel_urls.Length > 0));
+                               (AQI.cam.Action_CancelURL_Enabled && AQI.cam.cancel_urls.Length > 0) ||
+                               (AQI.cam.Action_webhook_enabled && AQI.cam.Action_webhook_cancel_url.IsNotEmpty()));
 
             bool IsCancel = ttype == TriggerType.Cancel || !Trigger;
 
@@ -299,7 +301,8 @@ namespace AITool
 
 
                 bool HasCancelAction = ((AQI.cam.Action_mqtt_enabled && !AQI.cam.Action_mqtt_payload_cancel.IsEmpty()) ||
-                                       (AQI.cam.Action_CancelURL_Enabled && AQI.cam.cancel_urls.Length > 0));
+                                       (AQI.cam.Action_CancelURL_Enabled && AQI.cam.cancel_urls.Length > 0) ||
+                                       (AQI.cam.Action_webhook_enabled && AQI.cam.Action_webhook_cancel_url.IsNotEmpty()));
 
                 if (HasCancelAction)
                 {

@@ -158,6 +158,17 @@ namespace AITool
         public string Action_mqtt_payload_cancel { get; set; } = "cancel";
         public bool Action_mqtt_retain_message { get; set; } = false;
         public bool Action_mqtt_send_image { get; set; } = false;
+
+        public bool Action_webhook_enabled { get; set; } = false;
+        public string Action_webhook_url { get; set; } = "";
+        public string Action_webhook_method { get; set; } = "POST";
+        public string Action_webhook_content_type { get; set; } = "application/json";
+        public string Action_webhook_headers { get; set; } = "";
+        public string Action_webhook_body { get; set; } = "[AllJson]";
+        public bool Action_webhook_send_image { get; set; } = false;
+        public string Action_webhook_cancel_url { get; set; } = "";
+        public string Action_webhook_cancel_body { get; set; } = "{\"camera\":\"[camera]\",\"event\":\"cancel\"}";
+
         public bool Action_queued { get; set; } = false;
         public bool Action_ActivateBlueIrisWindow { get; set; } = false;
         public bool Action_pushover_enabled { get; set; } = false;

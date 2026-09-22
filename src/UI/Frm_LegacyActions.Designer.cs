@@ -110,12 +110,30 @@
             this.cb_UrlTriggerEnabled = new System.Windows.Forms.CheckBox();
             this.label6 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
+            this.groupBoxWebhook = new System.Windows.Forms.GroupBox();
+            this.cb_Webhook_enabled = new System.Windows.Forms.CheckBox();
+            this.lbl_WebhookUrl = new System.Windows.Forms.Label();
+            this.tb_Webhook_Url = new System.Windows.Forms.TextBox();
+            this.lbl_WebhookMethod = new System.Windows.Forms.Label();
+            this.tb_Webhook_Method = new System.Windows.Forms.TextBox();
+            this.lbl_WebhookContentType = new System.Windows.Forms.Label();
+            this.tb_Webhook_ContentType = new System.Windows.Forms.TextBox();
+            this.cb_Webhook_SendImage = new System.Windows.Forms.CheckBox();
+            this.lbl_WebhookHeaders = new System.Windows.Forms.Label();
+            this.tb_Webhook_Headers = new System.Windows.Forms.TextBox();
+            this.lbl_WebhookBody = new System.Windows.Forms.Label();
+            this.tb_Webhook_Body = new System.Windows.Forms.TextBox();
+            this.lbl_WebhookCancelUrl = new System.Windows.Forms.Label();
+            this.tb_Webhook_CancelUrl = new System.Windows.Forms.TextBox();
+            this.lbl_WebhookCancelBody = new System.Windows.Forms.Label();
+            this.tb_Webhook_CancelBody = new System.Windows.Forms.TextBox();
             this.groupBoxMQTT.SuspendLayout();
             this.groupBoxTelegram.SuspendLayout();
             this.groupBoxPushover.SuspendLayout();
             this.panel1.SuspendLayout();
             this.groupBoxUrlCancel.SuspendLayout();
             this.groupBoxUrlTrigger.SuspendLayout();
+            this.groupBoxWebhook.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnCancel
@@ -293,7 +311,188 @@
             this.label13.Size = new System.Drawing.Size(50, 13);
             this.label13.TabIndex = 39;
             this.label13.Text = "Payload:";
-            // 
+            //
+            // groupBoxWebhook
+            //
+            this.groupBoxWebhook.Controls.Add(this.cb_Webhook_enabled);
+            this.groupBoxWebhook.Controls.Add(this.lbl_WebhookUrl);
+            this.groupBoxWebhook.Controls.Add(this.tb_Webhook_Url);
+            this.groupBoxWebhook.Controls.Add(this.lbl_WebhookMethod);
+            this.groupBoxWebhook.Controls.Add(this.tb_Webhook_Method);
+            this.groupBoxWebhook.Controls.Add(this.lbl_WebhookContentType);
+            this.groupBoxWebhook.Controls.Add(this.tb_Webhook_ContentType);
+            this.groupBoxWebhook.Controls.Add(this.cb_Webhook_SendImage);
+            this.groupBoxWebhook.Controls.Add(this.lbl_WebhookHeaders);
+            this.groupBoxWebhook.Controls.Add(this.tb_Webhook_Headers);
+            this.groupBoxWebhook.Controls.Add(this.lbl_WebhookBody);
+            this.groupBoxWebhook.Controls.Add(this.tb_Webhook_Body);
+            this.groupBoxWebhook.Controls.Add(this.lbl_WebhookCancelUrl);
+            this.groupBoxWebhook.Controls.Add(this.tb_Webhook_CancelUrl);
+            this.groupBoxWebhook.Controls.Add(this.lbl_WebhookCancelBody);
+            this.groupBoxWebhook.Controls.Add(this.tb_Webhook_CancelBody);
+            this.groupBoxWebhook.Location = new System.Drawing.Point(6, 680);
+            this.groupBoxWebhook.Name = "groupBoxWebhook";
+            this.groupBoxWebhook.Size = new System.Drawing.Size(852, 165);
+            this.groupBoxWebhook.TabIndex = 60;
+            this.groupBoxWebhook.TabStop = false;
+            //
+            // cb_Webhook_enabled
+            //
+            this.cb_Webhook_enabled.AutoSize = true;
+            this.cb_Webhook_enabled.ForeColor = System.Drawing.Color.DodgerBlue;
+            this.cb_Webhook_enabled.Location = new System.Drawing.Point(6, 0);
+            this.cb_Webhook_enabled.Name = "cb_Webhook_enabled";
+            this.cb_Webhook_enabled.Size = new System.Drawing.Size(103, 17);
+            this.cb_Webhook_enabled.TabIndex = 61;
+            this.cb_Webhook_enabled.Text = "Send Webhook:";
+            this.cb_Webhook_enabled.UseVisualStyleBackColor = true;
+            this.cb_Webhook_enabled.CheckedChanged += new System.EventHandler(this.cb_Webhook_enabled_CheckedChanged);
+            //
+            // lbl_WebhookUrl
+            //
+            this.lbl_WebhookUrl.AutoSize = true;
+            this.lbl_WebhookUrl.Location = new System.Drawing.Point(4, 29);
+            this.lbl_WebhookUrl.Name = "lbl_WebhookUrl";
+            this.lbl_WebhookUrl.Size = new System.Drawing.Size(28, 13);
+            this.lbl_WebhookUrl.TabIndex = 36;
+            this.lbl_WebhookUrl.Text = "URL:";
+            //
+            // tb_Webhook_Url
+            //
+            this.tb_Webhook_Url.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tb_Webhook_Url.Location = new System.Drawing.Point(35, 25);
+            this.tb_Webhook_Url.Name = "tb_Webhook_Url";
+            this.tb_Webhook_Url.Size = new System.Drawing.Size(300, 20);
+            this.tb_Webhook_Url.TabIndex = 62;
+            this.toolTip1.SetToolTip(this.tb_Webhook_Url, "The URL to POST/PUT to when the camera triggers.");
+            //
+            // lbl_WebhookMethod
+            //
+            this.lbl_WebhookMethod.AutoSize = true;
+            this.lbl_WebhookMethod.Location = new System.Drawing.Point(345, 29);
+            this.lbl_WebhookMethod.Name = "lbl_WebhookMethod";
+            this.lbl_WebhookMethod.Size = new System.Drawing.Size(45, 13);
+            this.lbl_WebhookMethod.TabIndex = 36;
+            this.lbl_WebhookMethod.Text = "Method:";
+            //
+            // tb_Webhook_Method
+            //
+            this.tb_Webhook_Method.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tb_Webhook_Method.Location = new System.Drawing.Point(395, 25);
+            this.tb_Webhook_Method.Name = "tb_Webhook_Method";
+            this.tb_Webhook_Method.Size = new System.Drawing.Size(50, 20);
+            this.tb_Webhook_Method.TabIndex = 63;
+            this.toolTip1.SetToolTip(this.tb_Webhook_Method, "HTTP method, e.g. POST or PUT.");
+            //
+            // lbl_WebhookContentType
+            //
+            this.lbl_WebhookContentType.AutoSize = true;
+            this.lbl_WebhookContentType.Location = new System.Drawing.Point(455, 29);
+            this.lbl_WebhookContentType.Name = "lbl_WebhookContentType";
+            this.lbl_WebhookContentType.Size = new System.Drawing.Size(72, 13);
+            this.lbl_WebhookContentType.TabIndex = 36;
+            this.lbl_WebhookContentType.Text = "Content-Type:";
+            //
+            // tb_Webhook_ContentType
+            //
+            this.tb_Webhook_ContentType.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tb_Webhook_ContentType.Location = new System.Drawing.Point(535, 25);
+            this.tb_Webhook_ContentType.Name = "tb_Webhook_ContentType";
+            this.tb_Webhook_ContentType.Size = new System.Drawing.Size(140, 20);
+            this.tb_Webhook_ContentType.TabIndex = 64;
+            this.toolTip1.SetToolTip(this.tb_Webhook_ContentType, "Ignored when 'Send Image' is checked (multipart/form-data is used instead).");
+            //
+            // cb_Webhook_SendImage
+            //
+            this.cb_Webhook_SendImage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.cb_Webhook_SendImage.AutoSize = true;
+            this.cb_Webhook_SendImage.Location = new System.Drawing.Point(758, 27);
+            this.cb_Webhook_SendImage.Name = "cb_Webhook_SendImage";
+            this.cb_Webhook_SendImage.Size = new System.Drawing.Size(86, 17);
+            this.cb_Webhook_SendImage.TabIndex = 65;
+            this.cb_Webhook_SendImage.Text = "Send Image";
+            this.toolTip1.SetToolTip(this.cb_Webhook_SendImage, "Sends multipart/form-data with the Body fields as form parts plus the image as " +
+        "a file part named \'image\', instead of sending Body/Content-Type directly.");
+            this.cb_Webhook_SendImage.UseVisualStyleBackColor = true;
+            //
+            // lbl_WebhookHeaders
+            //
+            this.lbl_WebhookHeaders.AutoSize = true;
+            this.lbl_WebhookHeaders.Location = new System.Drawing.Point(4, 57);
+            this.lbl_WebhookHeaders.Name = "lbl_WebhookHeaders";
+            this.lbl_WebhookHeaders.Size = new System.Drawing.Size(50, 13);
+            this.lbl_WebhookHeaders.TabIndex = 36;
+            this.lbl_WebhookHeaders.Text = "Headers:";
+            //
+            // tb_Webhook_Headers
+            //
+            this.tb_Webhook_Headers.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tb_Webhook_Headers.Location = new System.Drawing.Point(60, 52);
+            this.tb_Webhook_Headers.Multiline = true;
+            this.tb_Webhook_Headers.Name = "tb_Webhook_Headers";
+            this.tb_Webhook_Headers.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.tb_Webhook_Headers.Size = new System.Drawing.Size(400, 36);
+            this.tb_Webhook_Headers.TabIndex = 66;
+            this.toolTip1.SetToolTip(this.tb_Webhook_Headers, "One header per line, formatted as Name: value. Template variables allowed.");
+            //
+            // lbl_WebhookBody
+            //
+            this.lbl_WebhookBody.AutoSize = true;
+            this.lbl_WebhookBody.Location = new System.Drawing.Point(4, 93);
+            this.lbl_WebhookBody.Name = "lbl_WebhookBody";
+            this.lbl_WebhookBody.Size = new System.Drawing.Size(33, 13);
+            this.lbl_WebhookBody.TabIndex = 36;
+            this.lbl_WebhookBody.Text = "Body:";
+            //
+            // tb_Webhook_Body
+            //
+            this.tb_Webhook_Body.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tb_Webhook_Body.Location = new System.Drawing.Point(60, 90);
+            this.tb_Webhook_Body.Multiline = true;
+            this.tb_Webhook_Body.Name = "tb_Webhook_Body";
+            this.tb_Webhook_Body.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.tb_Webhook_Body.Size = new System.Drawing.Size(786, 36);
+            this.tb_Webhook_Body.TabIndex = 67;
+            this.toolTip1.SetToolTip(this.tb_Webhook_Body, "The request body template. Template variables allowed, e.g. [AllJson].");
+            //
+            // lbl_WebhookCancelUrl
+            //
+            this.lbl_WebhookCancelUrl.AutoSize = true;
+            this.lbl_WebhookCancelUrl.ForeColor = System.Drawing.Color.DarkRed;
+            this.lbl_WebhookCancelUrl.Location = new System.Drawing.Point(4, 131);
+            this.lbl_WebhookCancelUrl.Name = "lbl_WebhookCancelUrl";
+            this.lbl_WebhookCancelUrl.Size = new System.Drawing.Size(66, 13);
+            this.lbl_WebhookCancelUrl.TabIndex = 36;
+            this.lbl_WebhookCancelUrl.Text = "Cancel URL:";
+            //
+            // tb_Webhook_CancelUrl
+            //
+            this.tb_Webhook_CancelUrl.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tb_Webhook_CancelUrl.Location = new System.Drawing.Point(87, 127);
+            this.tb_Webhook_CancelUrl.Name = "tb_Webhook_CancelUrl";
+            this.tb_Webhook_CancelUrl.Size = new System.Drawing.Size(300, 20);
+            this.tb_Webhook_CancelUrl.TabIndex = 68;
+            this.toolTip1.SetToolTip(this.tb_Webhook_CancelUrl, "The URL to call when the alert is canceled. Leave empty to skip the cancel call" +
+        ".");
+            //
+            // lbl_WebhookCancelBody
+            //
+            this.lbl_WebhookCancelBody.AutoSize = true;
+            this.lbl_WebhookCancelBody.ForeColor = System.Drawing.Color.DarkRed;
+            this.lbl_WebhookCancelBody.Location = new System.Drawing.Point(400, 131);
+            this.lbl_WebhookCancelBody.Name = "lbl_WebhookCancelBody";
+            this.lbl_WebhookCancelBody.Size = new System.Drawing.Size(70, 13);
+            this.lbl_WebhookCancelBody.TabIndex = 36;
+            this.lbl_WebhookCancelBody.Text = "Cancel Body:";
+            //
+            // tb_Webhook_CancelBody
+            //
+            this.tb_Webhook_CancelBody.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tb_Webhook_CancelBody.Location = new System.Drawing.Point(475, 127);
+            this.tb_Webhook_CancelBody.Name = "tb_Webhook_CancelBody";
+            this.tb_Webhook_CancelBody.Size = new System.Drawing.Size(371, 20);
+            this.tb_Webhook_CancelBody.TabIndex = 69;
+            //
             // groupBoxTelegram
             // 
             this.groupBoxTelegram.Controls.Add(this.lnkTelegramTriggeringObjects);
@@ -920,6 +1119,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panel1.AutoScroll = true;
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel1.Controls.Add(this.groupBoxWebhook);
             this.panel1.Controls.Add(this.groupBoxUrlCancel);
             this.panel1.Controls.Add(this.groupBoxUrlTrigger);
             this.panel1.Controls.Add(this.cb_ActivateBlueIrisWindow);
@@ -1058,6 +1258,8 @@
             this.groupBoxUrlCancel.PerformLayout();
             this.groupBoxUrlTrigger.ResumeLayout(false);
             this.groupBoxUrlTrigger.PerformLayout();
+            this.groupBoxWebhook.ResumeLayout(false);
+            this.groupBoxWebhook.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -1144,5 +1346,22 @@
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label11;
         public System.Windows.Forms.CheckBox cb_ActivateBlueIrisWindow;
+        public System.Windows.Forms.GroupBox groupBoxWebhook;
+        public System.Windows.Forms.CheckBox cb_Webhook_enabled;
+        public System.Windows.Forms.TextBox tb_Webhook_Url;
+        public System.Windows.Forms.TextBox tb_Webhook_Method;
+        public System.Windows.Forms.TextBox tb_Webhook_ContentType;
+        public System.Windows.Forms.CheckBox cb_Webhook_SendImage;
+        public System.Windows.Forms.TextBox tb_Webhook_Headers;
+        public System.Windows.Forms.TextBox tb_Webhook_Body;
+        public System.Windows.Forms.TextBox tb_Webhook_CancelUrl;
+        public System.Windows.Forms.TextBox tb_Webhook_CancelBody;
+        private System.Windows.Forms.Label lbl_WebhookUrl;
+        private System.Windows.Forms.Label lbl_WebhookMethod;
+        private System.Windows.Forms.Label lbl_WebhookContentType;
+        private System.Windows.Forms.Label lbl_WebhookHeaders;
+        private System.Windows.Forms.Label lbl_WebhookBody;
+        private System.Windows.Forms.Label lbl_WebhookCancelUrl;
+        private System.Windows.Forms.Label lbl_WebhookCancelBody;
     }
 }
