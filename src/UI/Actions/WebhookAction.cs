@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -8,8 +8,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using static AITool.AITOOL;
-
-[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("AITool.Tests")]
 
 namespace AITool.Actions
 {
