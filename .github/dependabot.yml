@@ -7,6 +7,10 @@ updates:
     groups:
       nuget:
         patterns: ["*"]
+    ignore:
+      # ImageSharp 4.x requires a paid license key for Release builds
+      - dependency-name: SixLabors.ImageSharp
+        versions: [">=4.0.0"]
   - package-ecosystem: github-actions
     directory: /
     schedule:
