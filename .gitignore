@@ -267,3 +267,6 @@ __pycache__/
 /src/AITool.Service/.vshistory
 /src/.vshistory/bi-aidetection.sln
 /src/AITool.Service/Properties/.vshistory/AssemblyInfo.cs
+
+# Built installers ship via GitHub Releases
+src/UI/Installer/*.exe
