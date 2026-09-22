@@ -17,7 +17,7 @@
 #ifndef Configuration
   #define Configuration "Debug"
 #endif
-#define BuildDir "..\UI\bin\" + Configuration + "\net8.0-windows10.0.19041.0"
+#define BuildDir "..\UI\bin\" + Configuration + "\net10.0-windows10.0.19041.0"
 #dim Version[4]
 #expr ParseVersion(BuildDir + "\AITOOL.exe", Version[0], Version[1], Version[2], Version[3])
 #define AppVersion Str(Version[0]) + "." + Str(Version[1]) + "." + Str(Version[2]) + "." + Str(Version[3])
@@ -140,11 +140,13 @@ function InitializeSetup(): Boolean;
 var
   ErrorCode: Integer;
 begin
-    if not IsDotNetInstalled('Microsoft.NETCore.App 8.0.') then begin
-        MsgBox('AITOOL requires Microsoft .NET 8.0'#13#13
-            'https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/runtime-desktop-8.0.4-windows-x64-installer,'#13
-            '...and then re-run the MyApp setup program.', mbInformation, MB_OK);
-		Exec('explorer', 'https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/runtime-desktop-8.0.4-windows-x64-installer', '', SW_SHOW, ewNoWait, ErrorCode);
+    // WindowsDesktop.App is the runtime WinForms needs; NETCore.App alone is not enough.
+    if not IsDotNetInstalled('Microsoft.WindowsDesktop.App 10.0.') then begin
+        MsgBox('AITOOL requires the Microsoft .NET 10.0 Desktop Runtime.'#13#13
+            'Download it from:'#13
+            'https://dotnet.microsoft.com/en-us/download/dotnet/10.0'#13#13
+            '...and then re-run the AITOOL setup program.', mbInformation, MB_OK);
+		Exec('explorer', 'https://dotnet.microsoft.com/en-us/download/dotnet/10.0', '', SW_SHOW, ewNoWait, ErrorCode);
         result := false;
     end else
         result := true;

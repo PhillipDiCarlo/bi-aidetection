@@ -147,16 +147,15 @@ namespace AITool
                 FileTarget.ArchiveAboveSize = MaxSize;
                 FileTarget.ArchiveEvery = NLog.Targets.FileArchivePeriod.Day;
                 FileTarget.MaxArchiveDays = MaxAgeDays;
-                FileTarget.ArchiveNumbering = NLog.Targets.ArchiveNumberingMode.DateAndSequence;
                 FileTarget.ArchiveOldFileOnStartup = false;
-                FileTarget.ArchiveDateFormat = "yyyy-MM-dd";
-                FileTarget.ArchiveFileName = dir + "\\" + justfile + ".[{#}].log.zip";
+                // NLog 6 removed ArchiveFileName/ArchiveNumbering and zip compression; archives are now
+                // written next to the log file as <name>.[date]_NN.log
+                FileTarget.ArchiveSuffixFormat = "_{0:00}";
 
 
                 FileTarget.KeepFileOpen = false;
                 FileTarget.CreateDirs = true;
                 FileTarget.Header = "Date|Level|Source|Func|AIServer|Camera|Image|Detail|Idx|Depth|Color|ThreadID";
-                FileTarget.EnableArchiveFileCompression = true;
                 FileTarget.Layout = "${message}";  //nothing fancy we are doing it ourselves
 
                 this.NLogAsyncWrapper.WrappedTarget = FileTarget;

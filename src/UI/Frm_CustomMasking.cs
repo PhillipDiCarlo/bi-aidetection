@@ -11,10 +11,12 @@ namespace AITool
 {
     public partial class Frm_CustomMasking : Form
     {
+        [System.ComponentModel.DesignerSerializationVisibility(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public Camera Cam { get; set; }
         private Bitmap _transparentLayer, _cameraLayer, _inProgessLayer;
         private string _maskfilename { get; set; } = "";
         private const float DEFAULT_OPACITY = .5f;
+        [System.ComponentModel.DesignerSerializationVisibility(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public int BrushSize { get; set; }
         private bool _drawing = false;
 

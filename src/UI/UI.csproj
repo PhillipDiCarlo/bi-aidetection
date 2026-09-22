@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
+        <TargetFramework>net10.0-windows10.0.19041.0</TargetFramework>
         <ApplicationHighDpiMode>SystemAware</ApplicationHighDpiMode>
         <ForceDesignerDpiUnaware>true</ForceDesignerDpiUnaware>
         <LangVersion>latest</LangVersion>
@@ -75,31 +75,24 @@
         <Folder Include="Installer\" />
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="Angle" Version="3.3.0" />
+        <PackageReference Include="Angle" Version="3.6.1" />
         <PackageReference Include="AWSSDK.Rekognition" Version="3.7.302.22" />
-        <PackageReference Include="Markdig" Version="0.37.0" />
-        <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+        <PackageReference Include="Markdig" Version="1.4.0" />
         <PackageReference Include="MQTTnet" Version="4.3.6.1152" />
-        <PackageReference Include="NAudio.Vorbis" Version="1.5.0" />
-        <PackageReference Include="NAudio.Wasapi" Version="2.2.1" />
-        <PackageReference Include="NAudio.WinForms" Version="2.2.1" />
-        <PackageReference Include="NETStandard.Library" Version="2.0.3" />
-        <PackageReference Include="NLog" Version="5.3.2" />
+        <PackageReference Include="NAudio.Vorbis" Version="3.0.0" />
+        <PackageReference Include="NAudio.Wasapi" Version="3.1.0" />
+        <PackageReference Include="NAudio.WinForms" Version="3.1.0" />
+        <PackageReference Include="NLog" Version="6.2.1" />
         <PackageReference Include="NVorbis" Version="0.10.5" />
-        <PackageReference Include="Octokit" Version="11.0.1" />
-        <PackageReference Include="SixLabors.ImageSharp" Version="3.1.4" />
-        <PackageReference Include="SolarCalculator" Version="3.3.0" />
-        <PackageReference Include="SQLitePCLRaw.lib.e_sqlite3" Version="2.1.8" />
-        <PackageReference Include="System.Buffers" Version="4.5.1" />
-        <PackageReference Include="System.Management" Version="8.0.0" />
-        <PackageReference Include="System.Memory" Version="4.5.5" />
-        <PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
-        <PackageReference Include="System.Speech" Version="8.0.0" />
-        <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" />
-        <PackageReference Include="System.ValueTuple" Version="4.5.0" />
+        <PackageReference Include="Octokit" Version="14.0.0" />
+        <PackageReference Include="SixLabors.ImageSharp" Version="4.1.2" />
+        <PackageReference Include="SolarCalculator" Version="3.6.1" />
+        <PackageReference Include="SQLitePCLRaw.lib.e_sqlite3" Version="3.53.3" />
+        <PackageReference Include="System.Management" Version="10.0.0" />
+        <PackageReference Include="System.Speech" Version="10.0.0" />
         <PackageReference Include="Telegram.Bot" Version="19.0.0" />
-        <PackageReference Include="WindowsAPICodePack" Version="7.0.4" />
-        <PackageReference Include="WinForms.DataVisualization" Version="1.9.2" />
+        <PackageReference Include="WindowsAPICodePack" Version="8.0.15.2" />
+        <PackageReference Include="WinForms.DataVisualization" Version="1.10.2" />
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="ObjectListView.Repack.NET6Plus" Version="2.9.5" />

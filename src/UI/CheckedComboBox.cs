@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Windows.Forms;
@@ -110,6 +110,7 @@ namespace CheckComboBoxTest {
             private bool dropdownClosed = true;
 
             private CustomCheckedListBox cclb;
+            [System.ComponentModel.DesignerSerializationVisibility(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
             public CustomCheckedListBox List {
                 get { return cclb; }
                 set { cclb = value; }
@@ -252,16 +253,19 @@ namespace CheckComboBoxTest {
         // The valueSeparator character(s) between the ticked elements as they appear in the 
         // text portion of the CheckedComboBox.
         private string valueSeparator;
+        [System.ComponentModel.DesignerSerializationVisibility(System.ComponentModel.DesignerSerializationVisibility.Visible)]
         public string ValueSeparator {
             get { return valueSeparator; }
             set { valueSeparator = value; }
         }
 
+        [System.ComponentModel.DesignerSerializationVisibility(System.ComponentModel.DesignerSerializationVisibility.Visible)]
         public bool CheckOnClick {
             get { return dropdown.List.CheckOnClick; }
             set { dropdown.List.CheckOnClick = value; }
         }
 
+        [System.ComponentModel.DesignerSerializationVisibility(System.ComponentModel.DesignerSerializationVisibility.Visible)]
         public new string DisplayMember {
             get { return dropdown.List.DisplayMember; }
             set { dropdown.List.DisplayMember = value; }
