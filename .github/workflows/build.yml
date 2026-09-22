@@ -1,0 +1,32 @@
+name: Build
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Restore
+        run: dotnet restore src/bi-aidetection.sln
+
+      - name: Build
+        run: dotnet build src/bi-aidetection.sln -c Release --no-restore
+
+      - name: Test
+        run: dotnet test src/bi-aidetection.sln -c Release --no-build --verbosity normal
+
+      - name: Check for vulnerable packages
+        run: |
+          $out = dotnet list src/UI/UI.csproj package --vulnerable --include-transitive
+          Write-Output $out
+          if ($out -match '>') { Write-Error 'Vulnerable packages found'; exit 1 }

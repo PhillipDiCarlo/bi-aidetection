@@ -1,0 +1,35 @@
+name: Release
+
+# Tag a commit as v2.7.0 (etc) and push the tag to build the installer and attach it
+# to a GitHub Release. The in-app update checker reads releases from this repo.
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Build
+        run: dotnet build src/bi-aidetection.sln -c Release
+
+      - name: Install Inno Setup
+        run: choco install innosetup --no-progress -y
+
+      - name: Build installer
+        run: cmd /c src\AITool.Setup\BUILD.bat Release
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: src/UI/Installer/AIToolSetup.*.exe
+          generate_release_notes: true
