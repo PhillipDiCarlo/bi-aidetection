@@ -371,7 +371,8 @@ namespace AITool
         {
             AITOOL.Log($"Using Relevant Objects list from the 'Default' camera for {this.TypeName} RelevantObjectManager.");
             this.ObjectList = this.GetDefaultObjectList(true);
-            this.Update();
+            // ResetIfNeeded=false: if the default list is also empty, Update() would call Reset() again forever
+            this.Update(false);
         }
 
         public List<ClsRelevantObject> GetDefaultObjectList(bool Clear)
