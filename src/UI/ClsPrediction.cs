@@ -184,19 +184,25 @@ namespace AITool
                 return;
             }
 
-            this.AIWidth = AiDetectionObject.BoundingBox.Width;
-            this.AIHeight = AiDetectionObject.BoundingBox.Height;
+            // AWS SDK v4 made these nullable; treat a missing value as 0
+            double bbWidth = AiDetectionObject.BoundingBox.Width ?? 0;
+            double bbHeight = AiDetectionObject.BoundingBox.Height ?? 0;
+            double bbLeft = AiDetectionObject.BoundingBox.Left ?? 0;
+            double bbTop = AiDetectionObject.BoundingBox.Top ?? 0;
+
+            this.AIWidth = bbWidth;
+            this.AIHeight = bbHeight;
 
             //aws returns a percentage of the image width and height rather than actual pixels
-            this.RectHeight = curImg.Height * AiDetectionObject.BoundingBox.Height;
-            this.RectWidth = curImg.Width * AiDetectionObject.BoundingBox.Width;
+            this.RectHeight = curImg.Height * bbHeight;
+            this.RectWidth = curImg.Width * bbWidth;
 
 
-            double right = (curImg.Width * AiDetectionObject.BoundingBox.Left) + this.RectWidth;
-            double left = curImg.Width * AiDetectionObject.BoundingBox.Left;
+            double right = (curImg.Width * bbLeft) + this.RectWidth;
+            double left = curImg.Width * bbLeft;
 
-            double top = curImg.Height * AiDetectionObject.BoundingBox.Top;
-            double bottom = (curImg.Height * AiDetectionObject.BoundingBox.Top) + this.RectHeight;
+            double top = curImg.Height * bbTop;
+            double bottom = (curImg.Height * bbTop) + this.RectHeight;
 
             this.XMin = left;
             this.YMin = top;
@@ -241,27 +247,27 @@ namespace AITool
                 age = $", {AiDetectionObject.AgeRange.Low}-{AiDetectionObject.AgeRange.High}";
 
             string smile = "";
-            if (AiDetectionObject.Smile.Value)
+            if (AiDetectionObject.Smile?.Value == true)
                 smile = ", Smile";
 
             string eyeglasses = "";
-            if (AiDetectionObject.Eyeglasses.Value)
+            if (AiDetectionObject.Eyeglasses?.Value == true)
                 eyeglasses = ", Eyeglasses";
 
             string sunglasses = "";
-            if (AiDetectionObject.Sunglasses.Value)
+            if (AiDetectionObject.Sunglasses?.Value == true)
                 sunglasses = ", Sunglasses";
 
             string beard = "";
-            if (AiDetectionObject.Beard.Value)
+            if (AiDetectionObject.Beard?.Value == true)
                 beard = ", Beard";
 
             string mustache = "";
-            if (AiDetectionObject.Mustache.Value)
+            if (AiDetectionObject.Mustache?.Value == true)
                 mustache = ", Mustache";
 
             string mouthopen = "";
-            if (AiDetectionObject.MouthOpen.Value)
+            if (AiDetectionObject.MouthOpen?.Value == true)
                 mouthopen = ", MouthOpen";
 
 
@@ -269,7 +275,7 @@ namespace AITool
 
             this.Detail = $"{gender}{age}{emotions}{smile}{eyeglasses}{sunglasses}{beard}{mustache}{mouthopen}".Trim(", ".ToCharArray());
 
-            this.Confidence = AiDetectionObject.Confidence;
+            this.Confidence = AiDetectionObject.Confidence ?? 0;
 
             this.GetObjectType();
             this.UpdateImageInfo(curImg);
@@ -308,17 +314,24 @@ namespace AITool
             //Rectangle(xmin, ymin, xmax - xmin, ymax - ymin)
             //          x,    y     Width,       Height
 
-            this.AIWidth = AiDetectionObject.Instances[InstanceIdx].BoundingBox.Width;
-            this.AIHeight = AiDetectionObject.Instances[InstanceIdx].BoundingBox.Height;
+            // AWS SDK v4 made these nullable; treat a missing value as 0
+            var bb = AiDetectionObject.Instances[InstanceIdx].BoundingBox;
+            double bbWidth = bb.Width ?? 0;
+            double bbHeight = bb.Height ?? 0;
+            double bbLeft = bb.Left ?? 0;
+            double bbTop = bb.Top ?? 0;
 
-            this.RectHeight = curImg.Height * AiDetectionObject.Instances[InstanceIdx].BoundingBox.Height;
-            this.RectWidth = curImg.Width * AiDetectionObject.Instances[InstanceIdx].BoundingBox.Width;
+            this.AIWidth = bbWidth;
+            this.AIHeight = bbHeight;
 
-            double right = (curImg.Width * AiDetectionObject.Instances[InstanceIdx].BoundingBox.Left) + this.RectWidth;
-            double left = curImg.Width * AiDetectionObject.Instances[InstanceIdx].BoundingBox.Left;
+            this.RectHeight = curImg.Height * bbHeight;
+            this.RectWidth = curImg.Width * bbWidth;
 
-            double top = curImg.Height * AiDetectionObject.Instances[InstanceIdx].BoundingBox.Top;
-            double bottom = (curImg.Height * AiDetectionObject.Instances[InstanceIdx].BoundingBox.Top) + this.RectHeight;
+            double right = (curImg.Width * bbLeft) + this.RectWidth;
+            double left = curImg.Width * bbLeft;
+
+            double top = curImg.Height * bbTop;
+            double bottom = (curImg.Height * bbTop) + this.RectHeight;
 
             this.XMin = left;
             this.YMin = top;
@@ -337,7 +350,7 @@ namespace AITool
             //    this.Detail = this.Detail.Trim(", ".ToCharArray());
             //}
 
-            this.Confidence = AiDetectionObject.Confidence; //AiDetectionObject.Instances[InstanceIdx].Confidence;
+            this.Confidence = AiDetectionObject.Confidence ?? 0; //AiDetectionObject.Instances[InstanceIdx].Confidence;
 
             this.GetObjectType();
             this.UpdateImageInfo(curImg);

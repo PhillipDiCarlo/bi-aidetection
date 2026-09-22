@@ -76,7 +76,7 @@
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="Angle" Version="3.6.1" />
-        <PackageReference Include="AWSSDK.Rekognition" Version="3.7.302.22" />
+        <PackageReference Include="AWSSDK.Rekognition" Version="4.0.100.14" />
         <PackageReference Include="Markdig" Version="1.4.0" />
         <PackageReference Include="MQTTnet" Version="5.2.0.1603" />
         <PackageReference Include="NAudio.Vorbis" Version="3.0.0" />
