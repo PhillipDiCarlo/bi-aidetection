@@ -270,3 +270,6 @@ __pycache__/
 
 # Built installers ship via GitHub Releases
 src/UI/Installer/*.exe
+
+# Claude Code agent worktrees
+.claude/worktrees/

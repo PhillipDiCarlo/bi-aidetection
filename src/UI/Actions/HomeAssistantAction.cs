@@ -1,4 +1,4 @@
-using MQTTnet;
+﻿using MQTTnet;
 using MQTTnet.Protocol;
 
 using System.Collections.Concurrent;
@@ -74,7 +74,7 @@ namespace AITool.Actions
 
             if (AQI.Trigger)
             {
-                string attributes = HomeAssistantDiscovery.BuildAttributesPayload(AQI.Hist.Detections, predictions, AQI.CurImg.image_path, System.DateTime.Now);
+                string attributes = HomeAssistantDiscovery.BuildAttributesPayload(AQI.Hist.IsNull() ? "" : AQI.Hist.Detections, predictions, AQI.CurImg.image_path, System.DateTime.Now);
                 pr = await AITOOL.mqttClient.PublishAsync(HomeAssistantDiscovery.GetAttributesTopic(AQI.cam), attributes, false, null);
                 if (pr == null || pr.ReasonCode != MqttClientPublishReasonCode.Success)
                     ret = false;
