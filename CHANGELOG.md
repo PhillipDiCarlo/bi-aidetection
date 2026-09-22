@@ -17,6 +17,7 @@ https://github.com/VorlonCD/bi-aidetection/commits/master
 - Telegram token, MQTT password, Pushover keys, AWS secret key, SightHound key and DeepStack keys are now stored DPAPI-encrypted in `AITOOL.Settings.JSON` (previously plaintext). Existing files are migrated automatically on the next save.
 
 ### Changed
+- The DeepStack tab is hidden unless DeepStack for Windows is installed (DeepStack is unmaintained). Set `ShowDeepStackTab` to `true` in `AITOOL.Settings.JSON` to force it.
 - All NuGet packages updated; known vulnerabilities in ImageSharp and SQLitePCLRaw resolved.
 - Telegram.Bot 22, MQTTnet 5, AWS SDK v4, NLog 6. No user-visible behavior changes are intended.
 - Log archives are now written as `AITool.[date]_NN.log` next to the active log instead of `.log.zip` (NLog 6 dropped built-in archive compression).

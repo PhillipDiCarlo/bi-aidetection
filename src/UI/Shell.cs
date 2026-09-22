@@ -218,9 +218,13 @@ namespace AITool
 
                 if (!DeepStackServerControl.IsInstalled)
                 {
-                    //remove deepstack tab if not installed
-                    //Log("Removing DeepStack tab since it not installed as a Windows app (No docker support yet)");
-                    //this.tabControl1.TabPages.Remove(this.tabControl1.TabPages[""]);
+                    // DeepStack is unmaintained; only show its process-manager tab when it is actually installed
+                    // (or the user forces it with ShowDeepStackTab in the settings JSON)
+                    if (!AppSettings.Settings.ShowDeepStackTab && this.tabControl1.TabPages.Contains(this.tabDeepStack))
+                    {
+                        Log("Debug: Hiding DeepStack tab since DeepStack for Windows is not installed. Set 'ShowDeepStackTab' to true in AITOOL.Settings.JSON to show it.");
+                        this.tabControl1.TabPages.Remove(this.tabDeepStack);
+                    }
                 }
                 else
                 {

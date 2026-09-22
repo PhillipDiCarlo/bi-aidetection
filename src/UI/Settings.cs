@@ -73,6 +73,7 @@ namespace AITool
             public bool deepstack_stopbeforestart = true;
             public bool deepstack_urls_are_queued = true;
             public bool deepstack_autostart = false;
+            public bool ShowDeepStackTab = false;   //DeepStack is unmaintained (last release Jan 2022). The tab is only shown when DeepStack for Windows is installed or this is set.
             public bool deepstack_autoadd = true;
             public bool deepstack_debug = false;
             public bool deepstack_highpriority = true;
