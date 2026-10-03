@@ -163,6 +163,24 @@ namespace AITool
         {
             return Rectangle.FromLTRB(this.XMin.ToInt(true), this.YMin.ToInt(true), this.XMax.ToInt(true), this.YMax.ToInt(true));
         }
+
+        /// <summary>
+        /// 2.9 - crop before refinement: a refinement prediction is produced against a crop of the original image, so
+        /// its rectangle and image info (including the image used for mask checks in AnalyzePrediction()) are
+        /// relative to that crop. Call this once the full-image rectangle has been worked out (either the
+        /// crop-relative rectangle offset back by the crop's origin, or - for a prediction that describes the whole
+        /// crop, like a vision LLM's "Scene" summary - the original object's own rectangle) and BEFORE
+        /// AnalyzePrediction() runs, so mask checks evaluate against the camera's real mask coordinate space instead
+        /// of the crop's.
+        /// </summary>
+        public void SetFullImageRectangle(Rectangle fullImageRect, ClsImageQueueItem fullImage)
+        {
+            this.XMin = fullImageRect.Left;
+            this.YMin = fullImageRect.Top;
+            this.XMax = fullImageRect.Right;
+            this.YMax = fullImageRect.Bottom;
+            this.UpdateImageInfo(fullImage);  //also fixes Filename/_curimg (and calls UpdatePercent()) - still the crop's otherwise
+        }
         public RectangleF GetRectangleF()
         {
             return RectangleF.FromLTRB(this.XMin.ToFloat(), this.YMin.ToFloat(true), this.XMax.ToFloat(true), this.YMax.ToFloat(true));

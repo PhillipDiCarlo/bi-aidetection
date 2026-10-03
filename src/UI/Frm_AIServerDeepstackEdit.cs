@@ -73,6 +73,8 @@ namespace AITool
 
             this.cb_RefinementServer.Checked = this.CurURL.UseAsRefinementServer;
             this.tb_RefinementObjects.Text = this.CurURL.RefinementObjects;
+            this.cb_RefinementCrop.Checked = this.CurURL.RefinementCrop ?? false;
+            this.tb_RefinementCropPaddingPercent.Text = this.CurURL.RefinementCropPaddingPercent.ToString();
 
             this.cb_LinkedServers.Checked = this.CurURL.LinkServerResults;
 
@@ -191,6 +193,8 @@ namespace AITool
 
             this.CurURL.RefinementObjects = this.tb_RefinementObjects.Text.Trim();
             this.CurURL.UseAsRefinementServer = this.cb_RefinementServer.Checked;
+            this.CurURL.RefinementCrop = this.cb_RefinementCrop.Checked;
+            this.CurURL.RefinementCropPaddingPercent = this.tb_RefinementCropPaddingPercent.Text.ToInt();
 
             this.CurURL.LinkServerResults = this.cb_LinkedServers.Checked;
             this.CurURL.LinkedResultsServerList = "";

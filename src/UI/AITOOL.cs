@@ -552,6 +552,44 @@ namespace AITool
             //return (Image)(bmpCrop);
 
         }
+
+        //2.9 - crop before refinement: a refinement prediction whose PercentOfImage (relative to the crop it was
+        //produced from) is at or above this is treated as describing the whole crop (eg a vision LLM's "Scene"
+        //summary) rather than a localized sub-object within it.
+        public const double RefinementWholeCropCoveragePercent = 65;
+
+        /// <summary>
+        /// 2.9 - crop before refinement: pads an object's rectangle by PaddingPercent of its own width/height on each
+        /// side, then clamps the result to the image bounds. This is the crop sent to a per-object refinement server
+        /// instead of the full frame.
+        /// </summary>
+        public static Rectangle GetRefinementCropRectangle(Rectangle ObjectRect, int ImageWidth, int ImageHeight, int PaddingPercent)
+        {
+            int padx = (ObjectRect.Width * PaddingPercent) / 100;
+            int pady = (ObjectRect.Height * PaddingPercent) / 100;
+
+            int left = Math.Max(0, ObjectRect.Left - padx);
+            int top = Math.Max(0, ObjectRect.Top - pady);
+            int right = Math.Min(ImageWidth, ObjectRect.Right + padx);
+            int bottom = Math.Min(ImageHeight, ObjectRect.Bottom + pady);
+
+            //guard against a zero-size crop (eg a zero-size object rect, or an image smaller than reported)
+            if (right <= left)
+                right = Math.Min(ImageWidth, left + 1);
+            if (bottom <= top)
+                bottom = Math.Min(ImageHeight, top + 1);
+
+            return Rectangle.FromLTRB(left, top, right, bottom);
+        }
+
+        /// <summary>
+        /// 2.9 - crop before refinement: maps a rectangle that is relative to a crop (0,0 at the crop's top-left)
+        /// back to full-image pixel coordinates.
+        /// </summary>
+        public static Rectangle MapCropRelativeRectToFullImage(Rectangle CropArea, Rectangle CropRelativeRect)
+        {
+            return new Rectangle(CropArea.X + CropRelativeRect.X, CropArea.Y + CropRelativeRect.Y, CropRelativeRect.Width, CropRelativeRect.Height);
+        }
         //public static void Log(string Detail, string AIServer = "", Camera Camera = null, ClsImageQueueItem Image = null, string Source = "", int Depth = 0, LogLevel Level = null, Nullable<DateTime> Time = default(DateTime?), [CallerMemberName()] string memberName = null)
         //{
         //    string cam = Camera != null ? Camera.Name : "";
@@ -983,6 +1021,29 @@ namespace AITool
             return true;
         }
 
+        /// <summary>
+        /// True if Pred is a relevant prediction whose object type/label is one that RefinementObjects says a
+        /// refinement server wants to see. Shared by WaitForNextURL() (decides which refinement servers are
+        /// currently usable) and the per-object crop dispatch in DetectObjects() (2.9 - decides WHICH predictions
+        /// from the current image to crop and send to a given refinement server).
+        /// </summary>
+        public static bool IsRefinementMatch(ClsPrediction Pred, string RefinementObjects)
+        {
+            if (Pred.Result != ResultType.Relevant)
+                return false;
+
+            if (RefinementObjects.Has("animal") && Pred.ObjType == ObjectType.Animal)
+                return true;
+            else if (RefinementObjects.Has("person") || RefinementObjects.Has("people") && Pred.ObjType == ObjectType.Person)
+                return true;
+            else if (RefinementObjects.Has("vehicle") && Pred.ObjType == ObjectType.Vehicle)
+                return true;
+            else if (Global.IsInList(Pred.Label, RefinementObjects))
+                return true;
+
+            return false;
+        }
+
         public static async Task<List<ClsURLItem>> WaitForNextURL(Camera cam, bool GetRefinementServer, List<ClsPrediction> predictions = null, string RequiredLinkURLList = "", List<ClsURLItem> MainURLs = null)
         {
             //lets wait in here forever until a URL is available...  Unless trying to get a refinement server
@@ -1058,14 +1119,7 @@ namespace AITool
                                 if (pred.Result == ResultType.Relevant)
                                 {
                                     refinepreds += pred.Label + ",";
-                                    if (AppSettings.Settings.AIURLList[i].RefinementObjects.Has("animal") && pred.ObjType == ObjectType.Animal)
-                                        fnd = true;
-                                    else if (AppSettings.Settings.AIURLList[i].RefinementObjects.Has("person") || AppSettings.Settings.AIURLList[i].RefinementObjects.Has("people") && pred.ObjType == ObjectType.Person)
-                                        fnd = true;
-                                    else if (AppSettings.Settings.AIURLList[i].RefinementObjects.Has("vehicle") && pred.ObjType == ObjectType.Vehicle)
-                                        fnd = true;
-                                    else if (Global.IsInList(pred.Label, AppSettings.Settings.AIURLList[i].RefinementObjects))
-                                        fnd = true;
+                                    fnd = IsRefinementMatch(pred, AppSettings.Settings.AIURLList[i].RefinementObjects);
 
                                     if (fnd)
                                     {
@@ -2558,18 +2612,67 @@ namespace AITool
                             List<ClsURLItem> RefineURLs = await WaitForNextURL(cam, true, initialpredictions, "", ret.OutURLs);
                             if (RefineURLs.Count > 0)
                             {
-                                //Start processing all refinement urls
+                                //Start processing all refinement urls.  2.9 - crop before refinement: a server with
+                                //RefinementCrop enabled gets one call PER matching object (a padded crop of just that
+                                //object) instead of a single call with the full frame.
                                 urltasks = new List<Task<ClsAIServerResponse>>();
 
+                                //parallel to urltasks: the object a crop call was made for (and the crop rectangle/temp
+                                //file used), so the results can be mapped back to full-image coordinates once the call
+                                //completes and the temp file can be cleaned up. Null MatchedPred = a normal full-frame call.
+                                List<(ClsPrediction MatchedPred, Rectangle CropArea, ClsImageQueueItem CropImg, string TempImagePath)> refinetaskinfo =
+                                    new List<(ClsPrediction MatchedPred, Rectangle CropArea, ClsImageQueueItem CropImg, string TempImagePath)>();
+
                                 foreach (ClsURLItem url in RefineURLs)
-                                    urltasks.Add(Task.Run(() => GetDetectionsFromAIServer(CurImg, url, cam)));
+                                {
+                                    List<ClsPrediction> cropmatches = (url.RefinementCrop ?? false)
+                                        ? initialpredictions.Where(p => IsRefinementMatch(p, url.RefinementObjects)).ToList()
+                                        : new List<ClsPrediction>();
+
+                                    if (cropmatches.Count == 0)
+                                    {
+                                        //either this server doesn't use crop-before-refinement, or (shouldn't normally
+                                        //happen since WaitForNextURL already required a match) nothing currently
+                                        //matches - fall back to the full frame
+                                        urltasks.Add(Task.Run(() => GetDetectionsFromAIServer(CurImg, url, cam)));
+                                        refinetaskinfo.Add((null, Rectangle.Empty, null, null));
+                                        continue;
+                                    }
+
+                                    foreach (ClsPrediction matched in cropmatches)
+                                    {
+                                        Rectangle objectrect = matched.GetRectangle();
+                                        Rectangle croparea = GetRefinementCropRectangle(objectrect, CurImg.Width, CurImg.Height, url.RefinementCropPaddingPercent);
+
+                                        System.Drawing.Image cropimg = CropImage(CurImg, croparea);
+                                        if (cropimg == null)
+                                        {
+                                            Log($"Debug: [Refinement] Could not crop '{matched.Label}' {objectrect} for '{url.CurSrv}', using full frame instead.", url.CurSrv, cam, CurImg);
+                                            urltasks.Add(Task.Run(() => GetDetectionsFromAIServer(CurImg, url, cam)));
+                                            refinetaskinfo.Add((null, Rectangle.Empty, null, null));
+                                            continue;
+                                        }
+
+                                        string tmppath = Path.Combine(Global.GetTempFolder(), $"{cam.Name}.Refine.{Guid.NewGuid():N}.jpg");
+                                        cropimg.Save(tmppath, System.Drawing.Imaging.ImageFormat.Jpeg);
+                                        cropimg.Dispose();
+
+                                        ClsImageQueueItem cropqueueitem = new ClsImageQueueItem(tmppath, 0);
+
+                                        urltasks.Add(Task.Run(() => GetDetectionsFromAIServer(cropqueueitem, url, cam)));
+                                        refinetaskinfo.Add((matched, croparea, cropqueueitem, tmppath));
+                                    }
+                                }
 
                                 asrs = await Task.WhenAll(urltasks);
 
                                 int refineorder = 0;
 
-                                foreach (ClsAIServerResponse asr in asrs)
+                                for (int t = 0; t < asrs.Length; t++)
                                 {
+                                    ClsAIServerResponse asr = asrs[t];
+                                    var info = refinetaskinfo[t];
+
                                     AiUrl = asr.AIURL;
                                     AiUrl.LastResultSuccess = asr.Success;
                                     TotalSWPostTime += asr.SWPostTime;
@@ -2588,9 +2691,48 @@ namespace AITool
                                         foreach (ClsPrediction pred in asr.Predictions)
                                         {
                                             refineorder++;
-                                            pred.AnalyzePrediction(SkipDynamicMaskCheck: true);
                                             pred.ServerType = ServerType.Refine;
                                             pred.OriginalOrder = order;
+
+                                            bool mergedintoobject = false;
+
+                                            if (info.MatchedPred != null)
+                                            {
+                                                //this came from a per-object crop - decide BEFORE remapping, while
+                                                //pred.PercentOfImage is still relative to the crop it was produced from
+                                                bool coverswholecrop = pred.PercentOfImage >= RefinementWholeCropCoveragePercent;
+
+                                                Rectangle fullrect = coverswholecrop
+                                                    ? info.MatchedPred.GetRectangle()
+                                                    : MapCropRelativeRectToFullImage(info.CropArea, pred.GetRectangle());
+
+                                                //map back to full-image coordinates (and swap in the full image for mask
+                                                //checks) BEFORE AnalyzePrediction() below, so it evaluates against the
+                                                //camera's real mask coordinate space instead of the crop's
+                                                pred.SetFullImageRectangle(fullrect, CurImg);
+
+                                                if (coverswholecrop)
+                                                {
+                                                    //covers (almost) the entire crop - eg a vision LLM's "Scene" summary of
+                                                    //the cropped object - so it describes the object itself. Merge its detail
+                                                    //straight into that object instead of adding a near-duplicate prediction
+                                                    //with the same rectangle (this is the whole point of cropping: "person:
+                                                    //carrying a package" instead of a description of the whole yard).
+                                                    info.MatchedPred.Detail = info.MatchedPred.Detail.Append(pred.Detail, "; ");
+                                                    info.MatchedPred.RefineMergedCount++;
+                                                    info.MatchedPred.PercentMatchRefinement = 100;
+                                                    mergedintoobject = true;
+                                                }
+                                            }
+
+                                            pred.AnalyzePrediction(SkipDynamicMaskCheck: true);
+
+                                            if (mergedintoobject)
+                                            {
+                                                Log($"Debug: [Refinement]   Merged crop detail '{pred.Detail}' from {pred.Server} into {info.MatchedPred.Server} detection: {info.MatchedPred.ToString()} [{info.MatchedPred.Result}]", AiUrl.CurSrv, cam, CurImg);
+                                                continue;
+                                            }
+
                                             refinepredictions.Add(pred);
                                         }
                                     }
@@ -2600,6 +2742,12 @@ namespace AITool
                                         //AiUrl.IncrementError();
                                         //AiUrl.LastResultMessage = ret.Error;
                                         Log(ret.Error, AiUrl.CurSrv, cam, CurImg);
+                                    }
+
+                                    if (info.TempImagePath.IsNotEmpty())
+                                    {
+                                        ((IDisposable)info.CropImg).Dispose();
+                                        Global.SafeFileDelete(info.TempImagePath, "RefinementCrop");
                                     }
                                 }
 

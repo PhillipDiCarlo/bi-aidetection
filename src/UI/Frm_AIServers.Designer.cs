@@ -54,6 +54,8 @@ namespace AITool
             addAmazonFaceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             sightHoundVehicleAIServerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             sightHoundPersonAIServerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            openAIVisionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            anthropicVisionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             toolStripButtonEdit = new System.Windows.Forms.ToolStripButton();
             toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
@@ -98,7 +100,7 @@ namespace AITool
             // 
             // toolStripSplitButtonAdd
             // 
-            toolStripSplitButtonAdd.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { codeProjectAIObjectsToolStripMenuItem, codeProjectAILicensePlateToolStripMenuItem, codeProjectAIFacesToolStripMenuItem, codeProjectAISceneToolStripMenuItem, codeProjectAICustomToolStripMenuItem, codeProjectAIIPCAMAnimalToolStripMenuItem, codeProjectAIIPCAMCombinedToolStripMenuItem, codeProjectAIIPCAMDarkToolStripMenuItem, codeProjectAIIPCAMGeneralToolStripMenuItem, deepstackObjectsToolStripMenuItem, deepstackCustomToolStripMenuItem, deepstackSceneToolStripMenuItem, deepstackFacesToolStripMenuItem, blueOnyxToolStripMenuItem, localOnnxToolStripMenuItem, addDoodsServerToolStripMenuItem, addAmazonObjectsToolStripMenuItem, addAmazonFaceToolStripMenuItem, sightHoundVehicleAIServerToolStripMenuItem, sightHoundPersonAIServerToolStripMenuItem });
+            toolStripSplitButtonAdd.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { codeProjectAIObjectsToolStripMenuItem, codeProjectAILicensePlateToolStripMenuItem, codeProjectAIFacesToolStripMenuItem, codeProjectAISceneToolStripMenuItem, codeProjectAICustomToolStripMenuItem, codeProjectAIIPCAMAnimalToolStripMenuItem, codeProjectAIIPCAMCombinedToolStripMenuItem, codeProjectAIIPCAMDarkToolStripMenuItem, codeProjectAIIPCAMGeneralToolStripMenuItem, deepstackObjectsToolStripMenuItem, deepstackCustomToolStripMenuItem, deepstackSceneToolStripMenuItem, deepstackFacesToolStripMenuItem, blueOnyxToolStripMenuItem, localOnnxToolStripMenuItem, addDoodsServerToolStripMenuItem, addAmazonObjectsToolStripMenuItem, addAmazonFaceToolStripMenuItem, sightHoundVehicleAIServerToolStripMenuItem, sightHoundPersonAIServerToolStripMenuItem, openAIVisionToolStripMenuItem, anthropicVisionToolStripMenuItem });
             toolStripSplitButtonAdd.Image = (System.Drawing.Image)resources.GetObject("toolStripSplitButtonAdd.Image");
             toolStripSplitButtonAdd.ImageTransparentColor = System.Drawing.Color.Magenta;
             toolStripSplitButtonAdd.Name = "toolStripSplitButtonAdd";
@@ -275,7 +277,25 @@ namespace AITool
             sightHoundPersonAIServerToolStripMenuItem.Text = "SightHound (Person) AI Server";
             sightHoundPersonAIServerToolStripMenuItem.ToolTipText = "Person age, emotion, gender";
             sightHoundPersonAIServerToolStripMenuItem.Click += sightHoundPersonAIServerToolStripMenuItem_Click;
-            // 
+            //
+            // openAIVisionToolStripMenuItem
+            //
+            openAIVisionToolStripMenuItem.Image = Properties.Resources.network_server;
+            openAIVisionToolStripMenuItem.Name = "openAIVisionToolStripMenuItem";
+            openAIVisionToolStripMenuItem.Size = new System.Drawing.Size(273, 30);
+            openAIVisionToolStripMenuItem.Text = "OpenAI-compatible Vision (Ollama, LM Studio, OpenAI)";
+            openAIVisionToolStripMenuItem.ToolTipText = "Refinement using any OpenAI-compatible /v1/chat/completions vision endpoint - Ollama, LM Studio, OpenAI, etc.";
+            openAIVisionToolStripMenuItem.Click += openAIVisionToolStripMenuItem_Click;
+            //
+            // anthropicVisionToolStripMenuItem
+            //
+            anthropicVisionToolStripMenuItem.Image = Properties.Resources.network_server;
+            anthropicVisionToolStripMenuItem.Name = "anthropicVisionToolStripMenuItem";
+            anthropicVisionToolStripMenuItem.Size = new System.Drawing.Size(273, 30);
+            anthropicVisionToolStripMenuItem.Text = "Anthropic Claude Vision";
+            anthropicVisionToolStripMenuItem.ToolTipText = "Refinement using the Anthropic Claude Messages API vision model.";
+            anthropicVisionToolStripMenuItem.Click += anthropicVisionToolStripMenuItem_Click;
+            //
             // toolStripSeparator1
             // 
             toolStripSeparator1.Name = "toolStripSeparator1";
@@ -384,6 +404,8 @@ namespace AITool
         private System.Windows.Forms.ToolStripButton toolStripButtonDown;
         private System.Windows.Forms.ToolStripMenuItem sightHoundVehicleAIServerToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem sightHoundPersonAIServerToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem openAIVisionToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem anthropicVisionToolStripMenuItem;
         private System.Windows.Forms.ImageList imageList1;
         private System.Windows.Forms.ToolStripMenuItem addAmazonFaceToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem deepstackCustomToolStripMenuItem;

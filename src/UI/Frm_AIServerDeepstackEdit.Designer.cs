@@ -71,6 +71,9 @@ namespace AITool
             cb_RefinementServer = new System.Windows.Forms.CheckBox();
             label11 = new System.Windows.Forms.Label();
             tb_RefinementObjects = new System.Windows.Forms.TextBox();
+            cb_RefinementCrop = new System.Windows.Forms.CheckBox();
+            lbl_RefinementCropPadding = new System.Windows.Forms.Label();
+            tb_RefinementCropPaddingPercent = new System.Windows.Forms.TextBox();
             tb_Upper = new System.Windows.Forms.TextBox();
             tb_LinkedRefineTimeout = new System.Windows.Forms.TextBox();
             tb_Lower = new System.Windows.Forms.TextBox();
@@ -528,6 +531,9 @@ namespace AITool
             groupBoxRefine.Controls.Add(cb_RefinementServer);
             groupBoxRefine.Controls.Add(label11);
             groupBoxRefine.Controls.Add(tb_RefinementObjects);
+            groupBoxRefine.Controls.Add(cb_RefinementCrop);
+            groupBoxRefine.Controls.Add(lbl_RefinementCropPadding);
+            groupBoxRefine.Controls.Add(tb_RefinementCropPaddingPercent);
             groupBoxRefine.Location = new System.Drawing.Point(8, 196);
             groupBoxRefine.Name = "groupBoxRefine";
             groupBoxRefine.Size = new System.Drawing.Size(619, 63);
@@ -563,7 +569,37 @@ namespace AITool
             tb_RefinementObjects.Name = "tb_RefinementObjects";
             tb_RefinementObjects.Size = new System.Drawing.Size(605, 20);
             tb_RefinementObjects.TabIndex = 9;
-            // 
+            //
+            // cb_RefinementCrop
+            //
+            cb_RefinementCrop.AutoSize = true;
+            cb_RefinementCrop.ForeColor = System.Drawing.Color.DodgerBlue;
+            cb_RefinementCrop.Location = new System.Drawing.Point(175, 0);
+            cb_RefinementCrop.Name = "cb_RefinementCrop";
+            cb_RefinementCrop.Size = new System.Drawing.Size(97, 17);
+            cb_RefinementCrop.TabIndex = 10;
+            cb_RefinementCrop.Text = "Crop to object";
+            cb_RefinementCrop.UseVisualStyleBackColor = true;
+            toolTip1.SetToolTip(cb_RefinementCrop, "Send this server a padded crop of just the matching object instead of the full frame.  One refinement call is made per matching object.");
+            //
+            // lbl_RefinementCropPadding
+            //
+            lbl_RefinementCropPadding.AutoSize = true;
+            lbl_RefinementCropPadding.Location = new System.Drawing.Point(295, 3);
+            lbl_RefinementCropPadding.Name = "lbl_RefinementCropPadding";
+            lbl_RefinementCropPadding.Size = new System.Drawing.Size(65, 13);
+            lbl_RefinementCropPadding.TabIndex = 11;
+            lbl_RefinementCropPadding.Text = "Padding %:";
+            //
+            // tb_RefinementCropPaddingPercent
+            //
+            tb_RefinementCropPaddingPercent.Font = new System.Drawing.Font("Consolas", 8.25F);
+            tb_RefinementCropPaddingPercent.Location = new System.Drawing.Point(365, 0);
+            tb_RefinementCropPaddingPercent.Name = "tb_RefinementCropPaddingPercent";
+            tb_RefinementCropPaddingPercent.Size = new System.Drawing.Size(40, 20);
+            tb_RefinementCropPaddingPercent.TabIndex = 12;
+            toolTip1.SetToolTip(tb_RefinementCropPaddingPercent, "How much extra room to add around the object on each side before cropping, as a percent of the object's own width/height.");
+            //
             // tb_Upper
             // 
             tb_Upper.Font = new System.Drawing.Font("Consolas", 8.25F);
@@ -883,6 +919,9 @@ namespace AITool
         private System.Windows.Forms.TextBox tb_RefinementObjects;
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.CheckBox cb_RefinementServer;
+        private System.Windows.Forms.CheckBox cb_RefinementCrop;
+        private System.Windows.Forms.Label lbl_RefinementCropPadding;
+        private System.Windows.Forms.TextBox tb_RefinementCropPaddingPercent;
         private System.Windows.Forms.TextBox tb_timeout;
         private System.Windows.Forms.Label labelTimeout;
         private System.Windows.Forms.Label label13;
