@@ -226,6 +226,13 @@ namespace AITool
 
         public double MergePredictionsMinMatchPercent { get; set; } = 85;   //when combining predictions from multiple sources (deepstack/aws for example) the two objects have to match at least this much to be considered the same
 
+        public int LoiterSecondsRequired { get; set; } = 0;   //"loitering": an object must belong to a track present at least this many seconds before actions trigger. 0 = disabled (today's behavior)
+        public int TrackTimeoutSeconds { get; set; } = 15;   //how long a track can go unseen (no matching prediction) before it expires and a reappearing object starts a new track
+        public int TrackMinMatchPercent { get; set; } = 30;   //minimum rectangle match (IoU/Dice, see RectangleExtensions.IntersectPercent) to consider a prediction the continuation of an existing track rather than a new object
+
+        [JsonIgnore]
+        public ObjectTracker Tracker { get; set; } = new ObjectTracker();
+
         public int LastJPGCleanDay { get; set; } = 0;
 
         [JsonIgnore]

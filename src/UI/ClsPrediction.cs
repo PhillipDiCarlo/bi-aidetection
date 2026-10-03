@@ -98,6 +98,12 @@ namespace AITool
         public int DupeCount { get; set; } = 0;
         public int RefineMergedCount { get; set; } = 0;
         public DateTime Time { get; set; } = DateTime.MinValue;
+
+        //Set by ObjectTracker.Update() when object tracking / loitering is in use. TrackId=0 and
+        //TrackSeconds=0 mean this prediction was not matched to a track (tracking not run yet, or
+        //this prediction is not a "relevant" one that tracking considers).
+        public int TrackId { get; set; } = 0;
+        public double TrackSeconds { get; set; } = 0;
         public ClsDeepstackDetection ToDeepstackDetection()
         {
             ClsDeepstackDetection ret = new ClsDeepstackDetection();

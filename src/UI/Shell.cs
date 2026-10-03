@@ -2503,7 +2503,7 @@ namespace AITool
 
                     UpdateActionsLabel(cam);
 
-                    Lbl_PredictionTolerances.Text = $"Threshold: {cam.threshold_lower}-{cam.threshold_upper}, Size: {cam.PredSizeMinPercentOfImage.ToPercent()}-{cam.PredSizeMaxPercentOfImage.ToPercent()} ; Width: {cam.PredSizeMinWidth}-{cam.PredSizeMaxWidth}, Height: {cam.PredSizeMinHeight}-{cam.PredSizeMaxHeight}, PredictionMatch: {cam.MergePredictionsMinMatchPercent.ToPercent()}";
+                    Lbl_PredictionTolerances.Text = $"Threshold: {cam.threshold_lower}-{cam.threshold_upper}, Size: {cam.PredSizeMinPercentOfImage.ToPercent()}-{cam.PredSizeMaxPercentOfImage.ToPercent()} ; Width: {cam.PredSizeMinWidth}-{cam.PredSizeMaxWidth}, Height: {cam.PredSizeMinHeight}-{cam.PredSizeMaxHeight}, PredictionMatch: {cam.MergePredictionsMinMatchPercent.ToPercent()}, Loiter: {(cam.LoiterSecondsRequired > 0 ? cam.LoiterSecondsRequired + "s" : "off")}";
 
                     this.tableLayoutPanel6.Enabled = true;
 
@@ -2851,6 +2851,7 @@ namespace AITool
                                                 icam.PredSizeMaxWidth = cam.PredSizeMaxWidth;
                                                 icam.PredSizeMaxPercentOfImage = cam.PredSizeMaxPercentOfImage;
                                                 icam.PredSizeMinPercentOfImage = cam.PredSizeMinPercentOfImage;
+                                                icam.LoiterSecondsRequired = cam.LoiterSecondsRequired;
                                             }
                                             if (frm.cb_apply_objects.Checked)
                                             {
@@ -5506,6 +5507,8 @@ namespace AITool
 
                 frm.tb_duplicatepercent.Text = cam.MergePredictionsMinMatchPercent.ToString();
 
+                frm.tb_loiterseconds.Text = cam.LoiterSecondsRequired.ToString();
+
                 if (frm.ShowDialog() == DialogResult.OK)
                 {
                     cam.threshold_lower = GetNumberInt(frm.tb_ConfidenceLower.Text);
@@ -5517,8 +5520,9 @@ namespace AITool
                     cam.PredSizeMaxPercentOfImage = frm.tb_maxpercent.Text.ToDouble();
                     cam.PredSizeMinPercentOfImage = frm.tb_MinPercent.Text.ToDouble();
                     cam.MergePredictionsMinMatchPercent = frm.tb_duplicatepercent.Text.ToDouble();
+                    cam.LoiterSecondsRequired = GetNumberInt(frm.tb_loiterseconds.Text);
 
-                    Lbl_PredictionTolerances.Text = $"Threshold: {cam.threshold_lower}-{cam.threshold_upper}, Size: {cam.PredSizeMinPercentOfImage.ToPercent()}-{cam.PredSizeMaxPercentOfImage.ToPercent()} ; Width: {cam.PredSizeMinWidth}-{cam.PredSizeMaxWidth}, Height: {cam.PredSizeMinHeight}-{cam.PredSizeMaxHeight}, PredictionMatch: {cam.MergePredictionsMinMatchPercent.ToPercent()}";
+                    Lbl_PredictionTolerances.Text = $"Threshold: {cam.threshold_lower}-{cam.threshold_upper}, Size: {cam.PredSizeMinPercentOfImage.ToPercent()}-{cam.PredSizeMaxPercentOfImage.ToPercent()} ; Width: {cam.PredSizeMinWidth}-{cam.PredSizeMaxWidth}, Height: {cam.PredSizeMinHeight}-{cam.PredSizeMaxHeight}, PredictionMatch: {cam.MergePredictionsMinMatchPercent.ToPercent()}, Loiter: {(cam.LoiterSecondsRequired > 0 ? cam.LoiterSecondsRequired + "s" : "off")}";
 
                     AppSettings.SaveAsync(true);
                 }
