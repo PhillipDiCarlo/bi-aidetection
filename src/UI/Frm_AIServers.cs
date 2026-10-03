@@ -151,6 +151,26 @@ namespace AITool
             UpdateButtons();
         }
 
+        private void openAIVisionToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            using Working w = new Working();
+            ClsURLItem url = new ClsURLItem("", AppSettings.Settings.AIURLList.Count + 1, URLTypeEnum.OpenAI_Vision);
+            this.CurURL = url;
+            AppSettings.Settings.AIURLList.Add(url);
+            Global_GUI.UpdateFOLV(FOLV_AIServers, AppSettings.Settings.AIURLList, UseSelected: true, SelectObject: this.CurURL, FullRefresh: true);
+            UpdateButtons();
+        }
+
+        private void anthropicVisionToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            using Working w = new Working();
+            ClsURLItem url = new ClsURLItem("", AppSettings.Settings.AIURLList.Count + 1, URLTypeEnum.Anthropic_Vision);
+            this.CurURL = url;
+            AppSettings.Settings.AIURLList.Add(url);
+            Global_GUI.UpdateFOLV(FOLV_AIServers, AppSettings.Settings.AIURLList, UseSelected: true, SelectObject: this.CurURL, FullRefresh: true);
+            UpdateButtons();
+        }
+
         private void addDoodsServerToolStripMenuItem_Click(object sender, EventArgs e)
         {
             using Working w = new Working();
