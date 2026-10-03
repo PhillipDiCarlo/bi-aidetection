@@ -55,7 +55,7 @@ namespace AITool.AIProviders
 
                 string base64Jpeg = await ResizeToBase64JpegAsync(CurImg, AiUrl.ImageMaxDimension > 0 ? AiUrl.ImageMaxDimension : 1024);
 
-                string modelName = AiUrl.ModelName.IsNotEmpty() ? AiUrl.ModelName : (IsAnthropic ? "claude-opus-5" : "llava");
+                string modelName = AiUrl.ModelName.IsNotEmpty() ? AiUrl.ModelName : (IsAnthropic ? "claude-sonnet-5" : "llava");
                 string prompt = AITOOL.ReplaceParams(cam, null, CurImg, AiUrl.Prompt.IsNotEmpty() ? AiUrl.Prompt : DefaultPrompt, Global.IPType.Path);
                 int maxTokens = AiUrl.MaxTokens > 0 ? AiUrl.MaxTokens : 512;
 

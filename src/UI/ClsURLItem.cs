@@ -442,7 +442,7 @@ namespace AITool
                     this.UseAsRefinementServer = true;
                     this.RefinementObjects = "*";
                     if (this.ModelName.IsEmpty())
-                        this.ModelName = "claude-opus-5";
+                        this.ModelName = "claude-sonnet-5";
                     if (this.Prompt.IsEmpty())
                         this.Prompt = AIProviders.VisionLlmProvider.DefaultPrompt;
                     this.IsLocalHost = false;
