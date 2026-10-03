@@ -216,6 +216,14 @@ namespace AITool
             public string TickImageAddedSoundFile = "tick.wav";
 
             //public bool TopMost = true;   //keep the main form on top of all other windows
+
+            //Embedded web dashboard - lets the owner check status/history/AI servers and pause/resume cameras from a phone or another PC.
+            //8099 doesn't collide with Blue Iris (81/443), CodeProject.AI (32168), Frigate (5000/8971), or DeepStack (80).
+            public bool WebDashboardEnabled = false;
+            public int WebDashboardPort = 8099;
+            public bool WebDashboardAllowLan = false;  //false = bind to 127.0.0.1 only.  true = also listen on the LAN - exposes it to the network.
+            [JsonConverter(typeof(ProtectedStringConverter))]
+            public string WebDashboardToken = "";  //auto-generated the first time the dashboard is enabled
         }
 
         public static ClsURLItem GetURL(string url = "", URLTypeEnum type = URLTypeEnum.Unknown)

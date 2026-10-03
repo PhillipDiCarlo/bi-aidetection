@@ -51,6 +51,7 @@
             pauseAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             resumeAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             pauseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            webDashboardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             tabControl1 = new System.Windows.Forms.TabControl();
             tabOverview = new System.Windows.Forms.TabPage();
@@ -408,9 +409,9 @@
             // 
             // TraycontextMenuStrip
             // 
-            TraycontextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { pauseAllToolStripMenuItem, resumeAllToolStripMenuItem, pauseToolStripMenuItem, exitToolStripMenuItem });
+            TraycontextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { pauseAllToolStripMenuItem, resumeAllToolStripMenuItem, pauseToolStripMenuItem, webDashboardToolStripMenuItem, exitToolStripMenuItem });
             TraycontextMenuStrip.Name = "TraycontextMenuStrip";
-            TraycontextMenuStrip.Size = new System.Drawing.Size(134, 92);
+            TraycontextMenuStrip.Size = new System.Drawing.Size(134, 114);
             // 
             // pauseAllToolStripMenuItem
             // 
@@ -432,7 +433,14 @@
             pauseToolStripMenuItem.Size = new System.Drawing.Size(133, 22);
             pauseToolStripMenuItem.Text = "Pause...";
             pauseToolStripMenuItem.Click += pauseToolStripMenuItem_Click;
-            // 
+            //
+            // webDashboardToolStripMenuItem
+            //
+            webDashboardToolStripMenuItem.Name = "webDashboardToolStripMenuItem";
+            webDashboardToolStripMenuItem.Size = new System.Drawing.Size(133, 22);
+            webDashboardToolStripMenuItem.Text = "Web Dashboard...";
+            webDashboardToolStripMenuItem.Click += webDashboardToolStripMenuItem_Click;
+            //
             // exitToolStripMenuItem
             // 
             exitToolStripMenuItem.Name = "exitToolStripMenuItem";
@@ -4042,6 +4050,7 @@
         private System.Windows.Forms.ToolStripMenuItem pauseToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem pauseAllToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem resumeAllToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem webDashboardToolStripMenuItem;
     }
 }
 

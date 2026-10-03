@@ -79,6 +79,10 @@
     <ItemGroup>
         <PackageReference Include="Angle" Version="3.6.1" />
         <PackageReference Include="AWSSDK.Rekognition" Version="4.0.100.14" />
+        <!-- MIT-licensed, in-process web server for the embedded dashboard (ROADMAP 2.7). Its default "EmbedIO" listener
+             mode is a plain socket listener, not Windows http.sys, so a non-admin user can bind a LAN address without
+             an admin-only 'netsh http add urlacl' reservation - unlike System.Net.HttpListener. -->
+        <PackageReference Include="EmbedIO" Version="3.5.2" />
         <PackageReference Include="Markdig" Version="1.4.0" />
         <PackageReference Include="Microsoft.ML.OnnxRuntime.DirectML" Version="1.24.4" />
         <PackageReference Include="MQTTnet" Version="5.2.0.1603" />
