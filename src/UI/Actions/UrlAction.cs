@@ -71,12 +71,27 @@ namespace AITool.Actions
                     //Log($"Debug: No conditional objects found in URL: {url}");
                 }
 
+                //swap out "&user=...&pw=..." for a BlueIris "&session=..." if enabled - see ROADMAP.md 1.4 / BlueIrisSession.cs
+                string originalUrl = url;
+                string sessionBaseUrl = null;
+                if (AppSettings.Settings.BlueIrisUseSessionLogin)
+                    (url, sessionBaseUrl) = await BlueIrisSession.TryRewriteUrlForSessionLoginAsync(url);
+
                 Stopwatch sw = Stopwatch.StartNew();
                 try
                 {
                     Log($"Debug:   -> {type} URL is being triggered... {url}");
 
                     HttpResponseMessage response = await triggerHttpClient.GetAsync(url);
+
+                    //If using a session login and the call failed, the cached session may be stale/invalid - log in again and retry once
+                    if (response != null && !response.IsSuccessStatusCode && sessionBaseUrl.IsNotEmpty())
+                    {
+                        Log($"Debug:   -> {type} URL failed with a BlueIris session login (StatusCode='{response.StatusCode}'), re-logging in and retrying once...");
+                        BlueIrisSession.InvalidateSession(sessionBaseUrl);
+                        (url, sessionBaseUrl) = await BlueIrisSession.TryRewriteUrlForSessionLoginAsync(originalUrl);
+                        response = await triggerHttpClient.GetAsync(url);
+                    }
 
                     //If we get a null response it means the host+port was already in use.  In that case, we are just going to skip this URL call and call it good.
                     if (response == null)
