@@ -221,6 +221,16 @@ namespace AITool
             public string TickImageAddedSoundFile = "tick.wav";
 
             //public bool TopMost = true;   //keep the main form on top of all other windows
+
+            //Frigate (https://frigate.video) as an input source - see docs/frigate.md.  Uses the same MQTT broker as the mqtt_* settings above.
+            public bool FrigateEnabled = false;
+            public string FrigateUrl = "http://frigate:5000";
+            public string FrigateTopicPrefix = "frigate";
+            public string FrigateCameras = ""; //comma separated list of Frigate camera names to accept, empty = all
+            public string FrigateLabels = ""; //comma separated list of Frigate labels (object types) to accept, empty = all
+            public string FrigateSnapshotFolder = ""; //empty = "<Global.GetTempFolder()>\frigate"
+            [JsonConverter(typeof(ProtectedStringConverter))]
+            public string FrigateApiKey = ""; //only needed if an auth proxy in front of Frigate requires a bearer token
         }
 
         public static ClsURLItem GetURL(string url = "", URLTypeEnum type = URLTypeEnum.Unknown)

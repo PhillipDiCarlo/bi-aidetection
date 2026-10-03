@@ -1727,6 +1727,14 @@ namespace AITool
 
         public static void AddImageToQueue(string Filename)
         {
+            AddImageToQueue(Filename, null);
+        }
+
+        //Additive overload: lets a caller that has already matched its own Camera (e.g. FrigateSource, which maps a Frigate
+        //camera name to an AITool Camera via BICamName/Name/Prefix) skip the GetCamera(Filename) lookup and use that match directly.
+        //If Cam is null this behaves exactly like AddImageToQueue(string).
+        public static void AddImageToQueue(string Filename, Camera Cam)
+        {
 
             using var Trace = new Trace();  //This c# 8.0 using feature will auto dispose when the function is done.
 
@@ -1743,7 +1751,7 @@ namespace AITool
                     }
                     else
                     {
-                        Camera cam = GetCamera(Filename, true);
+                        Camera cam = Cam ?? GetCamera(Filename, true);
                         if (cam != null)  //only put in queue if we can match to camera (even default)
                         {
 

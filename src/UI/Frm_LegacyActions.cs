@@ -82,6 +82,35 @@ namespace AITool
             }
         }
 
+        private async void linkLabelFrigateSettings_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            using (Frm_FrigateSettings frm = new Frm_FrigateSettings())
+            {
+                frm.cb_Enabled.Checked = AppSettings.Settings.FrigateEnabled;
+                frm.tb_Url.Text = AppSettings.Settings.FrigateUrl;
+                frm.tb_TopicPrefix.Text = AppSettings.Settings.FrigateTopicPrefix;
+                frm.tb_Cameras.Text = AppSettings.Settings.FrigateCameras;
+                frm.tb_Labels.Text = AppSettings.Settings.FrigateLabels;
+                frm.tb_SnapshotFolder.Text = AppSettings.Settings.FrigateSnapshotFolder;
+                frm.tb_ApiKey.Text = AppSettings.Settings.FrigateApiKey;
+
+                if (frm.ShowDialog() == DialogResult.OK)
+                {
+                    AppSettings.Settings.FrigateEnabled = frm.cb_Enabled.Checked;
+                    AppSettings.Settings.FrigateUrl = frm.tb_Url.Text.Trim();
+                    AppSettings.Settings.FrigateTopicPrefix = frm.tb_TopicPrefix.Text.Trim();
+                    AppSettings.Settings.FrigateCameras = frm.tb_Cameras.Text.Trim();
+                    AppSettings.Settings.FrigateLabels = frm.tb_Labels.Text.Trim();
+                    AppSettings.Settings.FrigateSnapshotFolder = frm.tb_SnapshotFolder.Text.Trim();
+                    AppSettings.Settings.FrigateApiKey = frm.tb_ApiKey.Text.Trim();
+
+                    await AppSettings.SaveAsync();
+
+                    await FrigateSource.RestartAsync();
+                }
+            }
+        }
+
         private async void btTest_Click(object sender, EventArgs e)
         {
             this.btnCancel.Enabled = false;

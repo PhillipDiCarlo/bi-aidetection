@@ -6,6 +6,8 @@
 using MQTTnet.Protocol;
 
 using System;
+using System.Buffers;
+using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
@@ -16,6 +18,9 @@ using static AITool.AITOOL;
 
 namespace AITool
 {
+    //Handler signature for a subscribed topic.  Payload is the raw bytes received - callers can decode as UTF8/JSON themselves.
+    public delegate Task MqttMessageHandler(string Topic, byte[] Payload);
+
     public class MQTTClient : IDisposable, IAsyncDisposable
     {
         public bool IsSubscribed = false;
@@ -27,6 +32,10 @@ namespace AITool
         string LastTopic = "";
         string LastPayload = "";
         bool LastRetain = false;
+
+        //topics we are subscribed (or want to be subscribed) to, and the handler to call when a message for that topic arrives.
+        //Kept so we can re-subscribe automatically after a reconnect (see ConnectedAsync below).
+        private readonly ConcurrentDictionary<string, MqttMessageHandler> SubscribedHandlers = new ConcurrentDictionary<string, MqttMessageHandler>(StringComparer.OrdinalIgnoreCase);
 
         MqttClientFactory factory = null;
         IMqttClient mqttClient = null;
@@ -236,6 +245,22 @@ namespace AITool
                     Log($"Debug: MQTT: + Retain = {e.ApplicationMessage.Retain}");
                     Log("");
 
+                    //route to any handler registered for this topic (exact match, or MQTT wildcard match against the filter it subscribed with)
+                    foreach (var kv in this.SubscribedHandlers)
+                    {
+                        if (TopicMatchesFilter(kv.Key, e.ApplicationMessage.Topic))
+                        {
+                            try
+                            {
+                                await kv.Value(e.ApplicationMessage.Topic, e.ApplicationMessage.Payload.ToArray());
+                            }
+                            catch (Exception ex)
+                            {
+                                Log($"Error: MQTT: Subscribed handler for topic filter '{kv.Key}' threw: {ex.Msg()}");
+                            }
+                        }
+                    }
+
                 };
 
 
@@ -256,15 +281,20 @@ namespace AITool
                     Log($"Debug: MQTT: Sending '{AppSettings.Settings.mqtt_OnlinePayload}' message...");
                     MqttClientPublishResult res = await mqttClient.PublishAsync(ma, CancellationToken.None);
 
-                    //if (!string.IsNullOrWhiteSpace(this.LastTopic))
-                    //{
-                    //    // Subscribe to the topic
-                    //    MqttClientSubscribeResult res = await mqttClient.SubscribeAsync(this.LastTopic, MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce);
-
-                    //    IsSubscribed = true;
-
-                    //    Log($"Debug: MQTT: ### SUBSCRIBED to topic '{this.LastTopic}'");
-                    //}
+                    //re-subscribe to anything we were subscribed to - this fires after every successful connect, including reconnects
+                    foreach (string topic in this.SubscribedHandlers.Keys)
+                    {
+                        try
+                        {
+                            await mqttClient.SubscribeAsync(new MqttTopicFilterBuilder().WithTopic(topic).WithAtLeastOnceQoS().Build());
+                            IsSubscribed = true;
+                            Log($"Debug: MQTT: ### SUBSCRIBED to topic '{topic}' ###");
+                        }
+                        catch (Exception ex)
+                        {
+                            Log($"Error: MQTT: Could not subscribe to topic '{topic}': {ex.Msg()}");
+                        }
+                    }
                 };
 
                 Log($"Debug: MQTT: Connecting to server '{this.server}:{this.portint}' with ClientID '{AppSettings.Settings.mqtt_clientid}', Username '{AppSettings.Settings.mqtt_username}', Password '{AppSettings.Settings.mqtt_username.ReplaceChars('*')}'...");
@@ -410,6 +440,90 @@ namespace AITool
             return res;
 
 
+        }
+
+        //Subscribe to a topic (which may contain MQTT wildcards + or #) and route any matching message to Handler.
+        //Connects first if needed.  The topic/handler is remembered so ConnectedAsync (above) can re-subscribe automatically after a reconnect.
+        public async Task<bool> SubscribeAsync(string topic, MqttMessageHandler Handler)
+        {
+            using var Trace = new Trace();  //This c# 8.0 using feature will auto dispose when the function is done.
+
+            bool ret = false;
+
+            if (string.IsNullOrWhiteSpace(topic) || Handler == null)
+                return ret;
+
+            this.SubscribedHandlers[topic] = Handler;
+
+            try
+            {
+                if (!this.IsConnected || !this.mqttClient.IsConnected)
+                {
+                    await this.Connect();
+                }
+
+                if (this.IsConnected && this.mqttClient.IsConnected)
+                {
+                    await this.mqttClient.SubscribeAsync(new MqttTopicFilterBuilder().WithTopic(topic).WithAtLeastOnceQoS().Build());
+                    IsSubscribed = true;
+                    Log($"Debug: MQTT: ### SUBSCRIBED to topic '{topic}' ###");
+                    ret = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                Log($"Error: MQTT: Could not subscribe to topic '{topic}': {ex.Msg()}");
+            }
+
+            return ret;
+        }
+
+        //Stop routing messages for a previously-subscribed topic.
+        public async Task UnsubscribeAsync(string topic)
+        {
+            using var Trace = new Trace();  //This c# 8.0 using feature will auto dispose when the function is done.
+
+            this.SubscribedHandlers.TryRemove(topic, out _);
+
+            try
+            {
+                if (this.mqttClient != null && this.mqttClient.IsConnected)
+                {
+                    await this.mqttClient.UnsubscribeAsync(topic);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log($"Debug: MQTT: Could not unsubscribe from topic '{topic}': {ex.Msg()}");
+            }
+        }
+
+        //Basic MQTT topic filter matching (supports the + single-level and # multi-level wildcards).  Frigate topics are static
+        //(e.g. "frigate/events") so this is normally just a plain equality check, but wildcards are supported for completeness.
+        private static bool TopicMatchesFilter(string Filter, string Topic)
+        {
+            if (string.Equals(Filter, Topic, StringComparison.OrdinalIgnoreCase))
+                return true;
+
+            if (Filter.IndexOf('+') < 0 && Filter.IndexOf('#') < 0)
+                return false;
+
+            string[] filterParts = Filter.Split('/');
+            string[] topicParts = Topic.Split('/');
+
+            for (int i = 0; i < filterParts.Length; i++)
+            {
+                if (filterParts[i] == "#")
+                    return true; //matches this level and everything below
+
+                if (i >= topicParts.Length)
+                    return false;
+
+                if (filterParts[i] != "+" && !string.Equals(filterParts[i], topicParts[i], StringComparison.OrdinalIgnoreCase))
+                    return false;
+            }
+
+            return filterParts.Length == topicParts.Length;
         }
 
     }
