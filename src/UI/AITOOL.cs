@@ -37,6 +37,8 @@ using SixLabors.ImageSharp.Formats;
 using SixLabors.ImageSharp.Formats.Jpeg;
 using SixLabors.ImageSharp.Processing;
 
+using AITool.WebDashboard;
+
 using static AITool.Global;
 
 using Rectangle = System.Drawing.Rectangle;
@@ -250,6 +252,8 @@ namespace AITool
 
                 TriggerActionQueue = new ClsTriggerActionQueue();
 
+                //Headless/service friendly on purpose - doesn't depend on Shell/WinForms, so it also comes up when running as a service.
+                WebDashboardServer.Start();
 
                 await UpdateWatchers(false);
 

@@ -3217,6 +3217,8 @@ namespace AITool
                     if (!AppSettings.AlreadyRunning)
                         Global.SaveRegSetting("LastShutdownState", "graceful shutdown");
 
+                    AITool.WebDashboard.WebDashboardServer.Stop();
+
                     MasterCTS.Cancel();
 
                     //wait a bit for the loops to cancel to avoid other threading errors on shutdown and to allow the logs to finish updating if we need to reset settings
@@ -5701,6 +5703,14 @@ namespace AITool
             }
 
             MessageBox.Show("Resumed all cameras.");
+        }
+
+        private void webDashboardToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            using (Frm_WebDashboard frm = new Frm_WebDashboard())
+            {
+                frm.ShowDialog(this);
+            }
         }
 
         private void Shell_Activated(object sender, EventArgs e)
