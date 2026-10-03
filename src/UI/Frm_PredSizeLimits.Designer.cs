@@ -54,10 +54,15 @@ namespace AITool
             groupBox4 = new System.Windows.Forms.GroupBox();
             label11 = new System.Windows.Forms.Label();
             tb_duplicatepercent = new System.Windows.Forms.TextBox();
+            groupBox5 = new System.Windows.Forms.GroupBox();
+            label12 = new System.Windows.Forms.Label();
+            tb_loiterseconds = new System.Windows.Forms.TextBox();
+            label13 = new System.Windows.Forms.Label();
             groupBox1.SuspendLayout();
             groupBox2.SuspendLayout();
             groupBox3.SuspendLayout();
             groupBox4.SuspendLayout();
+            groupBox5.SuspendLayout();
             SuspendLayout();
             // 
             // label1
@@ -205,7 +210,7 @@ namespace AITool
             // 
             // BtnSave
             // 
-            BtnSave.Location = new System.Drawing.Point(211, 292);
+            BtnSave.Location = new System.Drawing.Point(211, 371);
             BtnSave.Name = "BtnSave";
             BtnSave.Size = new System.Drawing.Size(70, 30);
             BtnSave.TabIndex = 9;
@@ -297,12 +302,52 @@ namespace AITool
             tb_duplicatepercent.Size = new System.Drawing.Size(33, 22);
             tb_duplicatepercent.TabIndex = 8;
             tb_duplicatepercent.Text = "100";
-            // 
+            //
+            // groupBox5
+            //
+            groupBox5.Controls.Add(label12);
+            groupBox5.Controls.Add(tb_loiterseconds);
+            groupBox5.Controls.Add(label13);
+            groupBox5.Location = new System.Drawing.Point(12, 292);
+            groupBox5.Name = "groupBox5";
+            groupBox5.Size = new System.Drawing.Size(265, 70);
+            groupBox5.TabIndex = 6;
+            groupBox5.TabStop = false;
+            groupBox5.Text = "Loitering";
+            //
+            // label12
+            //
+            label12.AutoSize = true;
+            label12.Location = new System.Drawing.Point(6, 22);
+            label12.Name = "label12";
+            label12.Size = new System.Drawing.Size(174, 13);
+            label12.TabIndex = 0;
+            label12.Text = "Trigger only if present for (seconds):";
+            //
+            // tb_loiterseconds
+            //
+            tb_loiterseconds.Location = new System.Drawing.Point(199, 19);
+            tb_loiterseconds.Name = "tb_loiterseconds";
+            tb_loiterseconds.Size = new System.Drawing.Size(33, 22);
+            tb_loiterseconds.TabIndex = 9;
+            tb_loiterseconds.Text = "0";
+            //
+            // label13
+            //
+            label13.AutoSize = true;
+            label13.ForeColor = System.Drawing.Color.DimGray;
+            label13.Location = new System.Drawing.Point(6, 47);
+            label13.Name = "label13";
+            label13.Size = new System.Drawing.Size(240, 13);
+            label13.TabIndex = 2;
+            label13.Text = "0 = disabled (today's behavior). Needs an object track.";
+            //
             // Frm_PredSizeLimits
-            // 
+            //
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
             AutoScroll = true;
-            ClientSize = new System.Drawing.Size(288, 329);
+            ClientSize = new System.Drawing.Size(288, 418);
+            Controls.Add(groupBox5);
             Controls.Add(groupBox4);
             Controls.Add(groupBox3);
             Controls.Add(label8);
@@ -323,6 +368,8 @@ namespace AITool
             groupBox3.PerformLayout();
             groupBox4.ResumeLayout(false);
             groupBox4.PerformLayout();
+            groupBox5.ResumeLayout(false);
+            groupBox5.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -354,5 +401,9 @@ namespace AITool
         private System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.Label label11;
         public System.Windows.Forms.TextBox tb_duplicatepercent;
+        private System.Windows.Forms.GroupBox groupBox5;
+        private System.Windows.Forms.Label label12;
+        public System.Windows.Forms.TextBox tb_loiterseconds;
+        private System.Windows.Forms.Label label13;
     }
 }

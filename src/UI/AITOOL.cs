@@ -2751,6 +2751,17 @@ namespace AITool
                                                             .ThenBy(p => p.ObjectPriority)
                                                             .ThenByDescending(p => p.Confidence).ToList();
 
+                        //update object tracking (for loitering) with this image's relevant predictions, using the
+                        //image's capture time if we have it so tracking is correct even if processing is delayed/queued.
+                        //Must run before PredictionsJSON is built below so TrackId/TrackSeconds get persisted with it.
+                        DateTime TrackImageTime = CurImg.TimeCreated != DateTime.MinValue ? CurImg.TimeCreated : DateTime.Now;
+                        List<TrackMatch> TrackMatches = cam.Tracker.Update(cam, TrackImageTime, predictions.Where(p => p.Result == ResultType.Relevant).ToList());
+                        foreach (TrackMatch tm in TrackMatches)
+                        {
+                            tm.Prediction.TrackId = tm.Track.Id;
+                            tm.Prediction.TrackSeconds = tm.Age.TotalSeconds;
+                        }
+
                         //save any images with faces
                         foreach (ClsPrediction pred in predictions)
                         {
@@ -2912,20 +2923,43 @@ namespace AITool
 
                                 Log($"Debug: The summary:" + cam.last_detections_summary, AISRV, cam, CurImg);
 
-                                Log($"Debug: (5/6) Performing alert actions:", AISRV, cam, CurImg);
+                                //loitering gate: if the camera requires an object to be present for N seconds,
+                                //only proceed if at least one relevant prediction's track has aged that far
+                                bool LoiterOk = ObjectTracker.ShouldTrigger(cam, TrackMatches, out ObjectTrack LoiterTrack, out TimeSpan LoiterAge);
+
+                                if (LoiterOk)
+                                {
+                                    Log($"Debug: (5/6) Performing alert actions:", AISRV, cam, CurImg);
 
 
-                                hist = new History().Create(CurImg.image_path, DateTime.Now, cam.Name, objects_and_confidences, object_positions_as_string, true, PredictionsJSON, AISRV, TotalSWPostTime, true);
+                                    hist = new History().Create(CurImg.image_path, DateTime.Now, cam.Name, objects_and_confidences, object_positions_as_string, true, PredictionsJSON, AISRV, TotalSWPostTime, true);
 
-                                await TriggerActionQueue.AddTriggerActionAsync(TriggerType.All, cam, CurImg, hist, true, !cam.Action_queued, AISRV, ""); //make TRIGGER
+                                    await TriggerActionQueue.AddTriggerActionAsync(TriggerType.All, cam, CurImg, hist, true, !cam.Action_queued, AISRV, ""); //make TRIGGER
 
-                                cam.IncrementAlerts(); //stats update
-                                Log($"Debug: (6/6) SUCCESS.", AISRV, cam, CurImg);
+                                    cam.IncrementAlerts(); //stats update
+                                    Log($"Debug: (6/6) SUCCESS.", AISRV, cam, CurImg);
 
-                                //add to history list
-                                //Log($"Debug: Adding detection to history list.", AiUrl.CurSrv, cam.name);
-                                Global.CreateHistoryItem(hist);
+                                    //add to history list
+                                    //Log($"Debug: Adding detection to history list.", AiUrl.CurSrv, cam.name);
+                                    Global.CreateHistoryItem(hist);
+                                }
+                                else
+                                {
+                                    //not loitering long enough yet - treat like the existing cooldown-skip path: no trigger
+                                    //actions, but still record it in history (wording includes "skipped" so History.WasSkipped
+                                    //picks it up and the existing "skipped" history filter/coloring applies)
+                                    string LoiterLabel = LoiterTrack != null ? LoiterTrack.Label : "object";
+                                    int LoiterTrackId = LoiterTrack != null ? LoiterTrack.Id : 0;
 
+                                    Log($"Debug: (5/6) Not triggering - {LoiterLabel} track #{LoiterTrackId} present {LoiterAge.TotalSeconds.Round()}s of {cam.LoiterSecondsRequired}s required.", AISRV, cam, CurImg);
+
+                                    hist = new History().Create(CurImg.image_path, DateTime.Now, cam.Name, $"Skipped alert, not loitering long enough yet ({LoiterLabel} track #{LoiterTrackId} present {LoiterAge.TotalSeconds.Round()}s of {cam.LoiterSecondsRequired}s required) : {objects_and_confidences}", object_positions_as_string, false, PredictionsJSON, AISRV, TotalSWPostTime, false);
+
+                                    cam.stats_skipped_images++;
+                                    cam.stats_skipped_images_session++;
+
+                                    Global.CreateHistoryItem(hist);
+                                }
                             }
                             //if no object fulfills all 3 requirements but there are other objects: 
                             else if (irrelevant_objects.Count > 0)
@@ -3348,6 +3382,11 @@ namespace AITool
                         ret = Global.ReplaceCaseInsensitive(ret, "[detections]", detections.Trim(",".ToCharArray()));
                         ret = Global.ReplaceCaseInsensitive(ret, "[confidences]", confidences.Trim(",".ToCharArray()));
 
+                        //longest-present track among this detection's predictions (0/0 if tracking/loitering is not in use)
+                        ClsPrediction TrackPred = preds.OrderByDescending(p => p.TrackSeconds).First();
+                        ret = Global.ReplaceCaseInsensitive(ret, "[trackseconds]", TrackPred.TrackSeconds.Round().ToString());
+                        ret = Global.ReplaceCaseInsensitive(ret, "[trackid]", TrackPred.TrackId.ToString());
+
                     }
                     else
                     {
@@ -3363,6 +3402,8 @@ namespace AITool
                         ret = Global.ReplaceCaseInsensitive(ret, "[confidence]", string.Format(AppSettings.Settings.DisplayPercentageFormat, 99.123));
                         ret = Global.ReplaceCaseInsensitive(ret, "[detections]", "Detection1, Detection2");
                         ret = Global.ReplaceCaseInsensitive(ret, "[confidences]", string.Format(AppSettings.Settings.DisplayPercentageFormat, 99.123) + ", " + string.Format(AppSettings.Settings.DisplayPercentageFormat, 90.01));
+                        ret = Global.ReplaceCaseInsensitive(ret, "[trackseconds]", "12.3");
+                        ret = Global.ReplaceCaseInsensitive(ret, "[trackid]", "1");
                     }
 
                     if (ret.IndexOf("[Summaryjson]", StringComparison.OrdinalIgnoreCase) >= 0)
@@ -3408,6 +3449,8 @@ namespace AITool
                         ret = Global.ReplaceCaseInsensitive(ret, "[percentofimage]", "50.123");
                         ret = Global.ReplaceCaseInsensitive(ret, "[detections]", string.Join(",", cam.last_detections));
                         ret = Global.ReplaceCaseInsensitive(ret, "[confidences]", string.Join(",", cam.last_confidences.Select(x => x.ToString(AppSettings.Settings.DisplayPercentageFormat))));
+                        ret = Global.ReplaceCaseInsensitive(ret, "[trackseconds]", "0");
+                        ret = Global.ReplaceCaseInsensitive(ret, "[trackid]", "0");
                     }
                     else
                     {
@@ -3423,6 +3466,8 @@ namespace AITool
                         ret = Global.ReplaceCaseInsensitive(ret, "[confidence]", string.Format(AppSettings.Settings.DisplayPercentageFormat, 99.123));
                         ret = Global.ReplaceCaseInsensitive(ret, "[detections]", "Detection1, Detection2");
                         ret = Global.ReplaceCaseInsensitive(ret, "[confidences]", string.Format(AppSettings.Settings.DisplayPercentageFormat, 99.123) + ", " + string.Format(AppSettings.Settings.DisplayPercentageFormat, 90.01));
+                        ret = Global.ReplaceCaseInsensitive(ret, "[trackseconds]", "12.3");
+                        ret = Global.ReplaceCaseInsensitive(ret, "[trackid]", "1");
                     }
 
                     if (ret.IndexOf("[Summaryjson]", StringComparison.OrdinalIgnoreCase) >= 0)
