@@ -254,7 +254,7 @@ namespace AITool
 
         private void linkHelpURL_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            Process.Start(linkHelpURL.Text);
+            ShellLauncher.Open(linkHelpURL.Text);
         }
 
         private void btn_ImageAdjustEdit_Click(object sender, EventArgs e)

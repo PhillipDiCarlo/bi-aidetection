@@ -4978,7 +4978,7 @@ namespace AITool
         {
             if (System.IO.File.Exists(LogMan.GetCurrentLogFileName()))
             {
-                System.Diagnostics.Process.Start(LogMan.GetCurrentLogFileName());
+                ShellLauncher.Open(LogMan.GetCurrentLogFileName());
                 this.lbl_errors.Text = "";
             }
             else
@@ -5370,7 +5370,7 @@ namespace AITool
 
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            Process.Start("https://docs.deepstack.cc/windows/index.html");
+            ShellLauncher.Open("https://docs.deepstack.cc/windows/index.html");
         }
 
         private void bt_DeepstackReset_Click(object sender, EventArgs e)
@@ -5394,7 +5394,7 @@ namespace AITool
                 {
                     try
                     {
-                        Process.Start(errfile);
+                        ShellLauncher.Open(errfile);
                     }
                     catch (Exception)
                     {
@@ -5451,7 +5451,7 @@ namespace AITool
             if (this.folv_history.SelectedObjects != null && this.folv_history.SelectedObjects.Count > 0)
             {
                 History hist = (History)this.folv_history.SelectedObjects[0];
-                Process.Start(hist.Filename);
+                ShellLauncher.Open(hist.Filename);
 
             }
         }

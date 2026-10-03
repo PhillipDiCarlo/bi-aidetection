@@ -20,7 +20,7 @@ namespace AITool
 
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            Process.Start("https://docs.microsoft.com/en-us/dotnet/api/system.windows.media.colors?view=net-5.0");
+            ShellLauncher.Open("https://docs.microsoft.com/en-us/dotnet/api/system.windows.media.colors?view=net-5.0");
         }
 
         private void btnSave_Click(object sender, EventArgs e)

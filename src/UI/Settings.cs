@@ -176,6 +176,7 @@ namespace AITool
             public string DefaultPasswordEncrypted = "";
 
             public string BlueIrisServer = "127.0.0.1";
+            public string UpdateCheckRepository = "PhillipDiCarlo/bi-aidetection";  //owner/name of the GitHub repo whose releases the update checker looks at
 
             public string DOODSDetectorName = "default";
             public bool ScrewPutinTrumpAndWinniethePooh = true;

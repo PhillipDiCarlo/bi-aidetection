@@ -28,6 +28,11 @@ namespace AITool
         private DateTime CurrentVerTime = DateTime.MinValue;
         private GitHubClient client = null;
         private IReadOnlyList<Release> releases = null;
+        private Release stableRelease = null;
+        private Release betaRelease = null;
+
+        private string RepoOwner => AppSettings.Settings.UpdateCheckRepository.Split('/')[0].Trim();
+        private string RepoName => AppSettings.Settings.UpdateCheckRepository.Split('/').Last().Trim();
 
         public Frm_UpdateCheck()
         {
@@ -78,7 +83,7 @@ namespace AITool
 
                 //first get the most recent release:
                 if (client.IsNull())
-                    client = new GitHubClient(new ProductHeaderValue("AITOOL-VORLONCD"));
+                    client = new GitHubClient(new ProductHeaderValue("AITool"));
 
                 Log("Getting Github rate limits...");
 
@@ -126,59 +131,45 @@ namespace AITool
 
                 Log("Loading latest Github release...");
 
-                releases = await client.Repository.Release.GetAll("VorlonCD", "bi-aidetection");
+                releases = await client.Repository.Release.GetAll(RepoOwner, RepoName);
 
-                //var assets = await client.rel Release.GetAllAssets("VorlonCD", "bi-aidetection", releases[0]);
-                //var myAsset_zipFile = assets[0];
+                // "Release" is the newest normal release; "Beta" is the newest of any kind, including pre-releases
+                stableRelease = releases.FirstOrDefault(r => !r.Draft && !r.Prerelease);
+                betaRelease = releases.FirstOrDefault(r => !r.Draft);
 
-                string releasever = $"{releases[0].TagName} ({releases[0].PublishedAt.Value.LocalDateTime.ToShortDateString()})";
-                linkLabelRelease.Text = releasever;
-
-                ReleaseNote rn = new ReleaseNote();
-                rn.Date = releases[0].PublishedAt.Value.LocalDateTime;
-                rn.Title = releases[0].Name;
-                rn.Body = releases[0].Body;
-                rn.Version = releases[0].TagName;
-                rn.Type = "Release";
-                notes.Add(rn);
-
-
-
-                //get the latest beta version installer file
-                var repo = await client.Repository.Get("VorlonCD", "bi-aidetection");
-
-                var contents = await client.Repository.Content.GetAllContents("VorlonCD", "bi-aidetection", "src/UI/Installer");
-
-                //get the date on the file
-                var path = contents[0].Path; //"src/UI/Installer"; 
-                var branch = "master";
-
-                var request = new CommitRequest { Path = path, Sha = branch };
-
-                // find the latest commit to the file on a specific branch
-                var commitsForFile = await client.Repository.Commit.GetAll(repo.Id, request);
-                var mostRecentCommit = commitsForFile[0];
-                var authorDate = mostRecentCommit.Commit.Author.Date;
-                var fileEditDate = authorDate.LocalDateTime;
-
-                string ver = contents[0].Name.GetWord(".", ".exe");
-                string betaver = $"{ver} ({fileEditDate.ToShortDateString()})";
-                linkLabelBeta.Text = betaver;
-
-                if (CurAssm.GetName().Version < new Version(ver))
+                if (betaRelease.IsNull())
                 {
-                    lbl_message.Visible = true;
+                    string msg = $"No releases have been published yet at https://github.com/{RepoOwner}/{RepoName}/releases";
+                    Log("Debug: " + msg);
+                    MessageBox.Show(msg, "No releases", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                ReleaseNote rn;
+
+                if (stableRelease.IsNotNull())
+                {
+                    linkLabelRelease.Text = FormatRelease(stableRelease);
+                    notes.Add(ToReleaseNote(stableRelease, "Release"));
                 }
                 else
                 {
-                    lbl_message.Visible = false;
+                    linkLabelRelease.Text = "(none yet)";
                 }
 
-                var commits = await client.Repository.Commit.GetAll("VorlonCD", "bi-aidetection");
+                linkLabelBeta.Text = FormatRelease(betaRelease);
+                if (betaRelease != stableRelease)
+                    notes.Add(ToReleaseNote(betaRelease, "Pre-release"));
+
+                string ver = VersionFromTag(betaRelease.TagName);
+
+                lbl_message.Visible = Version.TryParse(ver, out Version latestVer) && CurAssm.GetName().Version < latestVer;
+
+                var commits = await client.Repository.Commit.GetAll(RepoOwner, RepoName);
 
                 for (int i = 0; i < commits.Count; i++)
                 {
-                    if (commits[i].Commit.Author.Date > releases[0].PublishedAt.Value.LocalDateTime)
+                    if (commits[i].Commit.Author.Date > betaRelease.PublishedAt.GetValueOrDefault().LocalDateTime)
                     {
                         rn = new ReleaseNote();
                         rn.Date = commits[i].Commit.Author.Date.LocalDateTime;
@@ -226,7 +217,7 @@ namespace AITool
                 //var file = await client.Repository.Content.GetAllContentsByRef(repo.Id, path, branch);
 
                 bt_InstallBeta.Enabled = true;
-                bt_installRelease.Enabled = true;
+                bt_installRelease.Enabled = stableRelease.IsNotNull();
 
                 //Setup the versions
                 //Version latestGitHubVersion = new Version(releases[0].TagName);
@@ -250,50 +241,81 @@ namespace AITool
 
         private void linkLabelRelease_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            Process.Start("https://github.com/VorlonCD/bi-aidetection/releases");
+            ShellLauncher.Open(stableRelease.IsNotNull() ? stableRelease.HtmlUrl : $"https://github.com/{RepoOwner}/{RepoName}/releases");
         }
 
         private void linkLabelBeta_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            Process.Start("https://github.com/VorlonCD/bi-aidetection/tree/master/src/UI/Installer");
+            ShellLauncher.Open(betaRelease.IsNotNull() ? betaRelease.HtmlUrl : $"https://github.com/{RepoOwner}/{RepoName}/releases");
         }
 
         private async void bt_installRelease_Click(object sender, EventArgs e)
+        {
+            await this.DownloadAndRunInstallerAsync(stableRelease, bt_installRelease);
+        }
+
+        private static string VersionFromTag(string Tag)
+        {
+            return Tag.Trim().TrimStart('v', 'V');
+        }
+
+        private static string FormatRelease(Release Rel)
+        {
+            return $"{Rel.TagName} ({Rel.PublishedAt.GetValueOrDefault().LocalDateTime.ToShortDateString()})";
+        }
+
+        private static ReleaseNote ToReleaseNote(Release Rel, string Type)
+        {
+            ReleaseNote rn = new ReleaseNote();
+            rn.Date = Rel.PublishedAt.GetValueOrDefault().LocalDateTime;
+            rn.Title = Rel.Name;
+            rn.Body = Rel.Body;
+            rn.Version = Rel.TagName;
+            rn.Type = Type;
+            return rn;
+        }
+
+        private async Task DownloadAndRunInstallerAsync(Release Rel, Button Btn)
         {
             try
             {
                 using Global_GUI.CursorWait cw = new Global_GUI.CursorWait();
 
-                bt_installRelease.Enabled = false;
-                bt_installRelease.Text = "Working";
+                Btn.Enabled = false;
+                Btn.Text = "Working";
 
-                string filename = Path.Combine(Directory.GetCurrentDirectory(), releases[0].Assets[0].Name);
+                ReleaseAsset asset = Rel?.Assets.FirstOrDefault(a => a.Name.EndsWith(".exe", StringComparison.OrdinalIgnoreCase));
+                if (asset.IsNull())
+                {
+                    MessageBox.Show($"Release '{Rel?.TagName}' has no installer attached.", "Error downloading", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                // the app folder is often under Program Files and not writable, so download to our temp folder
+                string filename = Path.Combine(Global.GetTempFolder(), asset.Name);
 
                 if (!System.IO.File.Exists(filename))
                 {
-                    var response = await client.Connection.Get<object>(new Uri(releases[0].Assets[0].Url), new Dictionary<string, string>(), "application/octet-stream");
-                    System.IO.File.WriteAllBytes(filename, (byte[])response.Body);
-
+                    using System.Net.Http.HttpClient http = new System.Net.Http.HttpClient();
+                    http.DefaultRequestHeaders.UserAgent.ParseAdd("AITool");
+                    byte[] bytes = await http.GetByteArrayAsync(asset.BrowserDownloadUrl);
+                    System.IO.File.WriteAllBytes(filename, bytes);
                 }
 
                 ExploreFile(filename);
-                Process.Start(filename);
+                ShellLauncher.Open(filename);
 
                 this.DialogResult = DialogResult.OK;
                 this.Close();
-                //if (filename.Has(".exe"))
-
             }
             catch (Exception ex)
             {
-
                 MessageBox.Show("Error: " + ex.Message, "Error downloading", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             finally
             {
-                bt_installRelease.Enabled = true;
-                bt_installRelease.Text = "Download";
-
+                Btn.Enabled = true;
+                Btn.Text = "Download";
             }
         }
 
@@ -311,62 +333,22 @@ namespace AITool
 
         private async void bt_InstallBeta_Click(object sender, EventArgs e)
         {
-
-
-            try
-            {
-                using Global_GUI.CursorWait cw = new Global_GUI.CursorWait();
-
-                bt_InstallBeta.Enabled = false;
-                bt_InstallBeta.Text = "Working";
-
-                //get the latest beta version installer file
-                var repo = await client.Repository.Get("VorlonCD", "bi-aidetection");
-
-                var contents = await client.Repository.Content.GetAllContents("VorlonCD", "bi-aidetection", "src/UI/Installer");
-
-                //Octokit.ApiException: 'Unsupported 'Accept' header: 'application/octet-stream'. Must accept 'application/json'.'
-
-                string filename = Path.Combine(Directory.GetCurrentDirectory(), contents[0].Name);
-
-                if (!System.IO.File.Exists(filename))
-                {
-                    var response = await client.Connection.Get<object>(new Uri(contents[0].DownloadUrl), new Dictionary<string, string>(), "application/octet-stream");
-
-                    System.IO.File.WriteAllBytes(filename, (byte[])response.Body);
-
-                }
-                ExploreFile(filename);
-                Process.Start(filename);
-                this.DialogResult = DialogResult.OK;
-                this.Close();
-            }
-            catch (Exception ex)
-            {
-
-                MessageBox.Show("Error: " + ex.Message, "Error downloading", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            finally
-            {
-                bt_InstallBeta.Enabled = true;
-                bt_InstallBeta.Text = "Download";
-
-            }
+            await this.DownloadAndRunInstallerAsync(betaRelease, bt_InstallBeta);
         }
 
         private void linkLabelReportIssue_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            Process.Start("https://github.com/VorlonCD/bi-aidetection/issues");
+            ShellLauncher.Open($"https://github.com/{RepoOwner}/{RepoName}/issues");
         }
 
         private void linkLabelIPCam_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            Process.Start("https://ipcamtalk.com/threads/tool-tutorial-free-ai-person-detection-for-blue-iris.37330/");
+            ShellLauncher.Open("https://ipcamtalk.com/threads/tool-tutorial-free-ai-person-detection-for-blue-iris.37330/");
         }
 
         private void btn_Donate_Click(object sender, EventArgs e)
         {
-            Process.Start("https://github.com/sponsors/VorlonCD");
+            ShellLauncher.Open("https://github.com/sponsors/VorlonCD");
         }
 
         private void webBrowser1_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)

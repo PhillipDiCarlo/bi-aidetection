@@ -16,7 +16,7 @@ namespace AITool
         {
             if (System.IO.File.Exists(AITOOL.LogMan.GetCurrentLogFileName()))
             {
-                System.Diagnostics.Process.Start(AITOOL.LogMan.GetCurrentLogFileName());
+                ShellLauncher.Open(AITOOL.LogMan.GetCurrentLogFileName());
                 //this.lbl_errors.Text = "";
             }
             else
