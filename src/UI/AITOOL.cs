@@ -1034,7 +1034,7 @@ namespace AITool
 
             if (RefinementObjects.Has("animal") && Pred.ObjType == ObjectType.Animal)
                 return true;
-            else if (RefinementObjects.Has("person") || RefinementObjects.Has("people") && Pred.ObjType == ObjectType.Person)
+            else if ((RefinementObjects.Has("person") || RefinementObjects.Has("people")) && Pred.ObjType == ObjectType.Person)
                 return true;
             else if (RefinementObjects.Has("vehicle") && Pred.ObjType == ObjectType.Vehicle)
                 return true;

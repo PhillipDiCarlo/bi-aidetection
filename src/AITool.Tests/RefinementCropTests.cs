@@ -1,4 +1,4 @@
-using System.Drawing;
+﻿using System.Drawing;
 using AITool;
 using Xunit;
 
@@ -163,6 +163,18 @@ public class RefinementCropTests
 
         Assert.True(AITOOL.IsRefinementMatch(person, "Person, People, Face"));
         Assert.False(AITOOL.IsRefinementMatch(person, "vehicle"));
+    }
+
+    [Fact]
+    public void IsRefinementMatch_PersonKeywordDoesNotMatchVehicles()
+    {
+        // Regression: "Has(person) || Has(people) && ObjType == Person" matched every relevant object
+        // whenever the list contained "person", so face servers were called for cars.
+        ClsPrediction vehicle = MakePrediction("Car", new Rectangle(0, 0, 10, 10), 100, 100);
+        vehicle.Result = ResultType.Relevant;
+        vehicle.ObjType = ObjectType.Vehicle;
+
+        Assert.False(AITOOL.IsRefinementMatch(vehicle, "Person, People, Face"));
     }
 
     [Fact]
