@@ -202,6 +202,8 @@
             tb_password = new System.Windows.Forms.TextBox();
             label16 = new System.Windows.Forms.Label();
             label17 = new System.Windows.Forms.Label();
+            cb_BlueIrisUseSessionLogin = new System.Windows.Forms.CheckBox();
+            btn_TestBlueIrisLogin = new System.Windows.Forms.Button();
             label18 = new System.Windows.Forms.Label();
             dbLayoutPanel5 = new DBLayoutPanel(components);
             tb_BlueIrisServer = new System.Windows.Forms.TextBox();
@@ -2309,17 +2311,21 @@
             // dbLayoutPanel4
             // 
             dbLayoutPanel4.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            dbLayoutPanel4.ColumnCount = 5;
+            dbLayoutPanel4.ColumnCount = 7;
             dbLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 75F));
             dbLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 150F));
             dbLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 75F));
             dbLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 150F));
-            dbLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 466F));
+            dbLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 180F));
+            dbLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 110F));
+            dbLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 176F));
             dbLayoutPanel4.Controls.Add(label6, 0, 0);
             dbLayoutPanel4.Controls.Add(tb_username, 1, 0);
             dbLayoutPanel4.Controls.Add(tb_password, 3, 0);
             dbLayoutPanel4.Controls.Add(label16, 2, 0);
-            dbLayoutPanel4.Controls.Add(label17, 4, 0);
+            dbLayoutPanel4.Controls.Add(cb_BlueIrisUseSessionLogin, 4, 0);
+            dbLayoutPanel4.Controls.Add(btn_TestBlueIrisLogin, 5, 0);
+            dbLayoutPanel4.Controls.Add(label17, 6, 0);
             dbLayoutPanel4.Location = new System.Drawing.Point(167, 320);
             dbLayoutPanel4.Name = "dbLayoutPanel4";
             dbLayoutPanel4.RowCount = 1;
@@ -2373,7 +2379,29 @@
             label17.TabIndex = 3;
             label17.Text = "These will be used with the [Username] and [Password] variables in Camera Actions.";
             label17.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
+            //
+            // cb_BlueIrisUseSessionLogin
+            //
+            cb_BlueIrisUseSessionLogin.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            cb_BlueIrisUseSessionLogin.AutoSize = true;
+            cb_BlueIrisUseSessionLogin.Location = new System.Drawing.Point(303, 14);
+            cb_BlueIrisUseSessionLogin.Name = "cb_BlueIrisUseSessionLogin";
+            cb_BlueIrisUseSessionLogin.Size = new System.Drawing.Size(144, 17);
+            cb_BlueIrisUseSessionLogin.TabIndex = 24;
+            cb_BlueIrisUseSessionLogin.Text = "Use secure session login";
+            cb_BlueIrisUseSessionLogin.UseVisualStyleBackColor = true;
+            //
+            // btn_TestBlueIrisLogin
+            //
+            btn_TestBlueIrisLogin.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            btn_TestBlueIrisLogin.Location = new System.Drawing.Point(483, 11);
+            btn_TestBlueIrisLogin.Name = "btn_TestBlueIrisLogin";
+            btn_TestBlueIrisLogin.Size = new System.Drawing.Size(100, 23);
+            btn_TestBlueIrisLogin.TabIndex = 25;
+            btn_TestBlueIrisLogin.Text = "Test login";
+            btn_TestBlueIrisLogin.UseVisualStyleBackColor = true;
+            btn_TestBlueIrisLogin.Click += btn_TestBlueIrisLogin_Click;
+            //
             // label18
             // 
             label18.Anchor = System.Windows.Forms.AnchorStyles.Right;
@@ -3950,6 +3978,8 @@
         private System.Windows.Forms.TextBox tb_password;
         private System.Windows.Forms.Label label16;
         private System.Windows.Forms.Label label17;
+        private System.Windows.Forms.CheckBox cb_BlueIrisUseSessionLogin;
+        private System.Windows.Forms.Button btn_TestBlueIrisLogin;
         private System.Windows.Forms.Label label18;
         private DBLayoutPanel dbLayoutPanel5;
         private System.Windows.Forms.TextBox tb_BlueIrisServer;

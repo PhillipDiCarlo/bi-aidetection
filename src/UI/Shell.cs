@@ -369,6 +369,7 @@ namespace AITool
 
             this.tb_username.Text = AppSettings.Settings.DefaultUserName;
             this.tb_password.Text = AppSettings.Settings.DefaultPasswordEncrypted.Decrypt();
+            this.cb_BlueIrisUseSessionLogin.Checked = AppSettings.Settings.BlueIrisUseSessionLogin;
 
             this.tb_BlueIrisServer.Text = AppSettings.Settings.BlueIrisServer;
 
@@ -3065,6 +3066,7 @@ namespace AITool
 
             AppSettings.Settings.DefaultUserName = this.tb_username.Text.Trim();
             AppSettings.Settings.DefaultPasswordEncrypted = this.tb_password.Text.Trim().Encrypt();
+            AppSettings.Settings.BlueIrisUseSessionLogin = this.cb_BlueIrisUseSessionLogin.Checked;
 
             AppSettings.Settings.BlueIrisServer = this.tb_BlueIrisServer.Text.Trim();
 
@@ -3653,6 +3655,45 @@ namespace AITool
                 {
                     this.cmbcaminput.Text = dialog.FileName;
                 }
+            }
+        }
+
+        private async void btn_TestBlueIrisLogin_Click(object sender, EventArgs e)
+        {
+            using var Trace = new Trace();  //This c# 8.0 using feature will auto dispose when the function is done.
+
+            string server = this.tb_BlueIrisServer.Text.Trim();
+            string username = this.tb_username.Text.Trim();
+            string password = this.tb_password.Text.Trim();
+
+            if (server.IsEmpty())
+            {
+                MessageBox.Show("Enter a BlueIris server name/IP first.", "BlueIris Session Login", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            //prefer the port BlueIris itself reported via the registry (AITOOL.BlueIrisInfo), fall back to the conventional default port
+            string baseurl;
+            if (AITOOL.BlueIrisInfo != null && AITOOL.BlueIrisInfo.Result == BlueIrisResult.Valid && AITOOL.BlueIrisInfo.ServerName.EqualsIgnoreCase(server) && AITOOL.BlueIrisInfo.URL.IsNotEmpty())
+                baseurl = AITOOL.BlueIrisInfo.URL;
+            else
+                baseurl = $"http://{server}:81";
+
+            this.btn_TestBlueIrisLogin.Enabled = false;
+            try
+            {
+                BlueIrisSession.InvalidateSession(baseurl); //always test with the currently typed-in credentials, don't reuse a cached session
+                await BlueIrisSession.GetSessionIdAsync(baseurl, username, password);
+                string info = BlueIrisSession.GetLastLoginInfo(baseurl);
+                MessageBox.Show($"Login succeeded for '{baseurl}'.{(info.IsNotEmpty() ? "\n" + info : "")}", "BlueIris Session Login", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Login failed for '{baseurl}':\n{ex.Msg()}", "BlueIris Session Login", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                this.btn_TestBlueIrisLogin.Enabled = true;
             }
         }
 

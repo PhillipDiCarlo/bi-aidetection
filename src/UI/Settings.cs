@@ -178,6 +178,10 @@ namespace AITool
             public string BlueIrisServer = "127.0.0.1";
             public string UpdateCheckRepository = "PhillipDiCarlo/bi-aidetection";  //owner/name of the GitHub repo whose releases the update checker looks at
 
+            //Not verified against a live BlueIris yet - see ROADMAP.md 1.4.  Default off; the "Test login" button
+            //in Settings lets the owner check it works before relying on it for real triggers.
+            public bool BlueIrisUseSessionLogin = false;
+
             public string DOODSDetectorName = "default";
             public bool ScrewPutinTrumpAndWinniethePooh = true;
             public int FileSystemWatcherRetryOnErrorTimeMS = 300000;  //5 mins default
