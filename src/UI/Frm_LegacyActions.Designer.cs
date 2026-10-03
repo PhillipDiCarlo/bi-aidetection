@@ -36,6 +36,7 @@
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.cb_MQTT_enabled = new System.Windows.Forms.CheckBox();
             this.linkLabelMqttSettings = new System.Windows.Forms.LinkLabel();
+            this.linkLabelFrigateSettings = new System.Windows.Forms.LinkLabel();
             this.label1 = new System.Windows.Forms.Label();
             this.tb_MQTT_Topic = new System.Windows.Forms.TextBox();
             this.label9 = new System.Windows.Forms.Label();
@@ -166,6 +167,7 @@
             this.groupBoxMQTT.Controls.Add(this.linkLabel1);
             this.groupBoxMQTT.Controls.Add(this.cb_MQTT_enabled);
             this.groupBoxMQTT.Controls.Add(this.linkLabelMqttSettings);
+            this.groupBoxMQTT.Controls.Add(this.linkLabelFrigateSettings);
             this.groupBoxMQTT.Controls.Add(this.label1);
             this.groupBoxMQTT.Controls.Add(this.tb_MQTT_Topic);
             this.groupBoxMQTT.Controls.Add(this.label9);
@@ -215,7 +217,19 @@
             this.linkLabelMqttSettings.Text = "Settings";
             this.toolTip1.SetToolTip(this.linkLabelMqttSettings, "Global MQTT Settings");
             this.linkLabelMqttSettings.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabelMqttSettings_LinkClicked);
-            // 
+            //
+            // linkLabelFrigateSettings
+            //
+            this.linkLabelFrigateSettings.AutoSize = true;
+            this.linkLabelFrigateSettings.Location = new System.Drawing.Point(205, 1);
+            this.linkLabelFrigateSettings.Name = "linkLabelFrigateSettings";
+            this.linkLabelFrigateSettings.Size = new System.Drawing.Size(45, 13);
+            this.linkLabelFrigateSettings.TabIndex = 42;
+            this.linkLabelFrigateSettings.TabStop = true;
+            this.linkLabelFrigateSettings.Text = "Frigate";
+            this.toolTip1.SetToolTip(this.linkLabelFrigateSettings, "Global Frigate Settings (uses this same MQTT broker as an input source)");
+            this.linkLabelFrigateSettings.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabelFrigateSettings_LinkClicked);
+            //
             // label1
             // 
             this.label1.AutoSize = true;
@@ -1285,6 +1299,7 @@
         public System.Windows.Forms.TextBox tb_MQTT_Topic;
         public System.Windows.Forms.CheckBox cb_MQTT_enabled;
         private System.Windows.Forms.LinkLabel linkLabelMqttSettings;
+        private System.Windows.Forms.LinkLabel linkLabelFrigateSettings;
         private System.Windows.Forms.Button btTest;
         private System.Windows.Forms.Label label7;
         public System.Windows.Forms.TextBox tb_telegram_caption;

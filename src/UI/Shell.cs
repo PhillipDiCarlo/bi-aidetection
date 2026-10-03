@@ -152,6 +152,8 @@ namespace AITool
 
             await AITOOL.InitializeBackend();
 
+            await FrigateSource.StartAsync();
+
 
             //Camera testcam = GetCamera("c:\\test\\CAMNAME.1.123456.jpg");
 
@@ -3097,6 +3099,8 @@ namespace AITool
             //update fswatcher to watch new input folder
             UpdateWatchers(true);
 
+            await FrigateSource.RestartAsync();
+
             //Update blue iris info
             Application.DoEvents();
 
@@ -3214,6 +3218,8 @@ namespace AITool
 
                     //wait a bit for the loops to cancel to avoid other threading errors on shutdown and to allow the logs to finish updating if we need to reset settings
                     Global.ResponsiveSleep(1000);
+
+                    FrigateSource.Stop();
 
                     try
                     {
