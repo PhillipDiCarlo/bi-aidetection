@@ -116,6 +116,10 @@ namespace AITool
         public int Threshold_Upper { get; set; } = 100;
         public bool UseAsRefinementServer { get; set; } = false;
         public string RefinementObjects { get; set; } = "";
+        //null = never explicitly set by the user (or missing from an older settings file) - Update() resolves it to a per-type
+        //default exactly once, after which it is a real value and is never overwritten again
+        public bool? RefinementCrop { get; set; } = null;
+        public int RefinementCropPaddingPercent { get; set; } = 15;
         [JsonIgnore]
         public ThreadSafe.Boolean RefinementUseCurrentlyValid { get; set; } = new ThreadSafe.Boolean(false);
         [JsonIgnore]
@@ -854,6 +858,16 @@ namespace AITool
             if (WasFixed)
                 this.UrlFixed = true;
 
+            //2.9 - crop before refinement: default on for the vision-LLM/plate-reader types that benefit from it, off for
+            //everything else so existing DeepStack/CPAI refinement behavior is unchanged unless the user opts in. Only
+            //resolved when never explicitly set (covers both brand new servers and ones loaded from an older settings
+            //file that predates this setting) - once resolved it is a real value and this is never applied again.
+            if (!this.RefinementCrop.HasValue)
+            {
+                this.RefinementCrop = this.Type == URLTypeEnum.OpenAI_Vision ||
+                                       this.Type == URLTypeEnum.Anthropic_Vision ||
+                                       this.Type == URLTypeEnum.CodeProject_AI_Plate;
+            }
 
             return ret;
         }
