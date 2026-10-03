@@ -50,7 +50,7 @@ Goal: adding a new AI backend or notification channel means adding one class, no
 - [x] **1.4 Blue Iris JSON API client.** Replace `user=&pw=` query-string credentials in trigger URLs with session login via `/json` (`login` → MD5(session:user:pw) → `trigger`, `alertlist`, `camlist`). Keep the legacy URL action working for people with custom URLs. _Landed as `BlueIrisUseSessionLogin` (default off) with a Test login button. **Needs verification on a live Blue Iris**: the login handshake is confirmed from docs, but whether `/admin` accepts `&session=` in place of `user`/`pw` is not; on failure it falls back to the original URL._
 - [x] **1.5 Async hygiene.** _On closer inspection there were no blocking `.Result`/`.Wait()` calls (the 93 hits were a property named `Result`), and `async void` is correct for WinForms event handlers. Fixed what was real: the shutdown settings save was not awaited, `async void Dispose()` on MQTTClient/SQLiteHistory, dead `LogFileWriter.cs`, debug leftovers._
 - [x] **1.6 Retire the DeepStack process manager.** DeepStack's last release was Jan 2022. Hide the DeepStack tab behind a "legacy" toggle; the `DeepStack` URL type stays (Blue Onyx and others use the same API).
-- [ ] **1.7 Split the god files.** `Shell.cs` (5.6k lines), `Global.cs` (5.1k), `AITOOL.cs` (4.7k) into partial classes by concern (queue, watchers, masking, params, etc.). Mechanical moves only.
+- [x] **1.7 Split the god files.** _AITOOL, Global and Shell are now partial classes across `Name.Concern.cs` files; byte-identical member moves._ `Shell.cs` (5.6k lines), `Global.cs` (5.1k), `AITOOL.cs` (4.7k) into partial classes by concern (queue, watchers, masking, params, etc.). Mechanical moves only.
 
 ---
 
