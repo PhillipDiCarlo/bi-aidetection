@@ -62,7 +62,6 @@ Goal: keep AITool relevant now that Blue Iris has native AI. Lean into what BI d
 - [x] **2.2 Vision-LLM refinement provider.** _Landed as `OpenAI_Vision` / `Anthropic_Vision` URL types (`VisionLlmProvider`). Refinement servers currently receive the full image, not a crop; crop plumbing is a follow-up._ `OpenAICompatibleVisionProvider` targeting any OpenAI-style `/v1/chat/completions` endpoint (Ollama, LM Studio, OpenAI, Gemini) plus a native Anthropic option. Used as a *refinement server*: send the crop + a per-camera prompt ("Is this person carrying a package? Answer JSON."), get back a label/detail that flows into `[Summary]` and the Blue Iris memo.
 - [x] **2.3 Blue Onyx as a named backend.** Verify it works via the DeepStack-compatible provider, add `Blue_Onyx` to `URLTypeEnum` with default port/URL/help link, document it.
 - [x] **2.4 Generic webhook action.** _See `webhook.md`._ JSON POST with configurable body using the existing template vars (`[Summary]`, `[DetectionsJson]`, `[ImagePath]`…), optional image as base64 or multipart. Covers Discord, Slack, ntfy, n8n, Home Assistant webhooks.
-- [x] **2.5 Home Assistant MQTT discovery.** _See the Home Assistant section in `mqtt.md`._ Publish `homeassistant/binary_sensor/aitool_<camera>_<object>/config` so each camera/object pair appears in HA automatically. Small addition to `MQTTClient`.
 - [ ] **2.6 Frigate as an input source.** Subscribe to Frigate's `frigate/events` MQTT topic and pull the snapshot via its HTTP API, feeding the same image queue as the Blue Iris JPEG folder.
 - [ ] **2.7 Embedded web dashboard.** Kestrel minimal API + a small static page: status, AI server health, recent history with images, pause/resume. This is also what enables a real headless / Windows Service mode.
 - [ ] **2.8 Object tracking across frames.**
@@ -72,6 +71,8 @@ Goal: keep AITool relevant now that Blue Iris has native AI. Lean into what BI d
 ---
 
 ## Not planned
+
+- Home Assistant MQTT discovery (was 2.5) — implemented, then removed at the owner's request. Recoverable from commit fc3c714 if wanted later.
 
 - Azure AI Vision / Google Cloud Vision label APIs — superseded by 2.2 (vision LLMs give richer results for the same integration effort).
 - Face training UI — faces are stored under `_Settings\FaceStorage` but CodeProject.AI/DeepStack face APIs are effectively unmaintained; revisit if a maintained backend appears.

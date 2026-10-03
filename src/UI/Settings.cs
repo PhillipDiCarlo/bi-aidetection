@@ -130,12 +130,6 @@ namespace AITool
             public string mqtt_LastWillPayload = "Offline";
             public string mqtt_OnlinePayload = "Online";
 
-            public bool mqtt_HomeAssistantDiscovery = false;
-            public string mqtt_HomeAssistantDiscoveryPrefix = "homeassistant";
-            public string mqtt_HomeAssistantDeviceName = "AITool";
-            public int mqtt_HomeAssistantOffDelaySeconds = 30;
-            public bool mqtt_HomeAssistantPublishImage = false;
-
 
             [JsonConverter(typeof(ProtectedStringConverter))]
             public string pushover_APIKey = "";

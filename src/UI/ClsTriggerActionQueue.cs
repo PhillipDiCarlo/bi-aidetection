@@ -100,7 +100,6 @@ namespace AITool
                 new Actions.UrlAction(),
                 new Actions.WebhookAction(),
                 new Actions.MqttAction(),
-                new Actions.HomeAssistantAction(),
                 this.Pushover,
                 this.Telegram,
             };

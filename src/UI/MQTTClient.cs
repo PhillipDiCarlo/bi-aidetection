@@ -256,26 +256,6 @@ namespace AITool
                     Log($"Debug: MQTT: Sending '{AppSettings.Settings.mqtt_OnlinePayload}' message...");
                     MqttClientPublishResult res = await mqttClient.PublishAsync(ma, CancellationToken.None);
 
-                    if (AppSettings.Settings.mqtt_HomeAssistantDiscovery)
-                    {
-                        //resend all cameras' retained discovery configs so Home Assistant picks them up again after a broker restart
-                        foreach (Camera cam in AppSettings.Settings.CameraList)
-                        {
-                            foreach (HADiscoveryMessage msg in HomeAssistantDiscovery.GetDiscoveryMessages(cam, AppSettings.Settings))
-                            {
-                                MqttApplicationMessage dma = new MqttApplicationMessageBuilder()
-                                                                .WithTopic(msg.Topic)
-                                                                .WithPayload(msg.PayloadJson)
-                                                                .WithQualityOfServiceLevel(MqttQualityOfServiceLevel.AtLeastOnce)
-                                                                .WithRetainFlag(true)
-                                                                .Build();
-
-                                await mqttClient.PublishAsync(dma, CancellationToken.None);
-                            }
-                        }
-                        Log($"Debug: MQTT: Republished Home Assistant discovery configs for {AppSettings.Settings.CameraList.Count} camera(s).");
-                    }
-
                     //if (!string.IsNullOrWhiteSpace(this.LastTopic))
                     //{
                     //    // Subscribe to the topic
@@ -299,20 +279,6 @@ namespace AITool
                 Log($"Error: {ex.Msg()}");
             }
             return ret;
-        }
-
-        /// <summary>Publishes every camera's retained Home Assistant discovery configs. Connects first if needed. Called after connecting and when the setting is turned on.</summary>
-        public async Task PublishHomeAssistantDiscoveryAsync()
-        {
-            using var Trace = new Trace();  //This c# 8.0 using feature will auto dispose when the function is done.
-
-            foreach (Camera cam in AppSettings.Settings.CameraList)
-            {
-                foreach (HADiscoveryMessage msg in HomeAssistantDiscovery.GetDiscoveryMessages(cam, AppSettings.Settings))
-                {
-                    await this.PublishAsync(msg.Topic, msg.PayloadJson, true, null);
-                }
-            }
         }
 
         public async Task<MqttClientPublishResult> PublishAsync(string topic, string payload, bool retain, ClsImageQueueItem CurImg)

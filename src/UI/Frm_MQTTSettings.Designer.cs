@@ -52,25 +52,15 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.btTest = new System.Windows.Forms.Button();
-            this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.cb_HomeAssistantDiscovery = new System.Windows.Forms.CheckBox();
-            this.cb_HomeAssistantPublishImage = new System.Windows.Forms.CheckBox();
-            this.label10 = new System.Windows.Forms.Label();
-            this.tb_HomeAssistantDiscoveryPrefix = new System.Windows.Forms.TextBox();
-            this.label11 = new System.Windows.Forms.Label();
-            this.tb_HomeAssistantDeviceName = new System.Windows.Forms.TextBox();
-            this.label12 = new System.Windows.Forms.Label();
-            this.tb_HomeAssistantOffDelaySeconds = new System.Windows.Forms.TextBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
-            this.groupBox3.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnCancel
             // 
             this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(431, 440);
+            this.btnCancel.Location = new System.Drawing.Point(431, 322);
             this.btnCancel.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(70, 30);
@@ -82,7 +72,7 @@
             // btnSave
             // 
             this.btnSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnSave.Location = new System.Drawing.Point(353, 440);
+            this.btnSave.Location = new System.Drawing.Point(353, 322);
             this.btnSave.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(70, 30);
@@ -293,7 +283,7 @@
             // btTest
             // 
             this.btTest.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btTest.Location = new System.Drawing.Point(276, 440);
+            this.btTest.Location = new System.Drawing.Point(276, 322);
             this.btTest.Name = "btTest";
             this.btTest.Size = new System.Drawing.Size(70, 30);
             this.btTest.TabIndex = 6;
@@ -301,97 +291,11 @@
             this.btTest.UseVisualStyleBackColor = true;
             this.btTest.Click += new System.EventHandler(this.btTest_ClickAsync);
             // 
-            // groupBox3
-            // 
-            this.groupBox3.Controls.Add(this.cb_HomeAssistantDiscovery);
-            this.groupBox3.Controls.Add(this.cb_HomeAssistantPublishImage);
-            this.groupBox3.Controls.Add(this.label10);
-            this.groupBox3.Controls.Add(this.tb_HomeAssistantDiscoveryPrefix);
-            this.groupBox3.Controls.Add(this.label11);
-            this.groupBox3.Controls.Add(this.tb_HomeAssistantDeviceName);
-            this.groupBox3.Controls.Add(this.label12);
-            this.groupBox3.Controls.Add(this.tb_HomeAssistantOffDelaySeconds);
-            this.groupBox3.Location = new System.Drawing.Point(8, 320);
-            this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(493, 110);
-            this.groupBox3.TabIndex = 9;
-            this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "Home Assistant";
-            // 
-            // cb_HomeAssistantDiscovery
-            // 
-            this.cb_HomeAssistantDiscovery.AutoSize = true;
-            this.cb_HomeAssistantDiscovery.Location = new System.Drawing.Point(9, 22);
-            this.cb_HomeAssistantDiscovery.Name = "cb_HomeAssistantDiscovery";
-            this.cb_HomeAssistantDiscovery.Size = new System.Drawing.Size(180, 19);
-            this.cb_HomeAssistantDiscovery.TabIndex = 0;
-            this.cb_HomeAssistantDiscovery.Text = "Enable Home Assistant Discovery";
-            this.cb_HomeAssistantDiscovery.UseVisualStyleBackColor = true;
-            // 
-            // cb_HomeAssistantPublishImage
-            // 
-            this.cb_HomeAssistantPublishImage.AutoSize = true;
-            this.cb_HomeAssistantPublishImage.Location = new System.Drawing.Point(280, 22);
-            this.cb_HomeAssistantPublishImage.Name = "cb_HomeAssistantPublishImage";
-            this.cb_HomeAssistantPublishImage.Size = new System.Drawing.Size(97, 19);
-            this.cb_HomeAssistantPublishImage.TabIndex = 1;
-            this.cb_HomeAssistantPublishImage.Text = "Publish Image";
-            this.cb_HomeAssistantPublishImage.UseVisualStyleBackColor = true;
-            // 
-            // label10
-            // 
-            this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(9, 51);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(93, 15);
-            this.label10.TabIndex = 0;
-            this.label10.Text = "Discovery Prefix:";
-            // 
-            // tb_HomeAssistantDiscoveryPrefix
-            // 
-            this.tb_HomeAssistantDiscoveryPrefix.Location = new System.Drawing.Point(108, 48);
-            this.tb_HomeAssistantDiscoveryPrefix.Name = "tb_HomeAssistantDiscoveryPrefix";
-            this.tb_HomeAssistantDiscoveryPrefix.Size = new System.Drawing.Size(120, 23);
-            this.tb_HomeAssistantDiscoveryPrefix.TabIndex = 2;
-            // 
-            // label11
-            // 
-            this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(246, 51);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(84, 15);
-            this.label11.TabIndex = 0;
-            this.label11.Text = "Device Name:";
-            // 
-            // tb_HomeAssistantDeviceName
-            // 
-            this.tb_HomeAssistantDeviceName.Location = new System.Drawing.Point(336, 48);
-            this.tb_HomeAssistantDeviceName.Name = "tb_HomeAssistantDeviceName";
-            this.tb_HomeAssistantDeviceName.Size = new System.Drawing.Size(145, 23);
-            this.tb_HomeAssistantDeviceName.TabIndex = 3;
-            // 
-            // label12
-            // 
-            this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(9, 82);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(120, 15);
-            this.label12.TabIndex = 0;
-            this.label12.Text = "Off Delay (seconds):";
-            // 
-            // tb_HomeAssistantOffDelaySeconds
-            // 
-            this.tb_HomeAssistantOffDelaySeconds.Location = new System.Drawing.Point(135, 79);
-            this.tb_HomeAssistantOffDelaySeconds.Name = "tb_HomeAssistantOffDelaySeconds";
-            this.tb_HomeAssistantOffDelaySeconds.Size = new System.Drawing.Size(60, 23);
-            this.tb_HomeAssistantOffDelaySeconds.TabIndex = 4;
-            // 
             // Frm_MQTTSettings
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(513, 484);
-            this.Controls.Add(this.groupBox3);
+            this.ClientSize = new System.Drawing.Size(513, 366);
             this.Controls.Add(this.btTest);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.btnCancel);
@@ -405,8 +309,6 @@
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
-            this.groupBox3.ResumeLayout(false);
-            this.groupBox3.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -437,14 +339,5 @@
         public System.Windows.Forms.CheckBox cb_Retain;
         public System.Windows.Forms.TextBox tb_ClientID;
         private System.Windows.Forms.Label label9;
-        private System.Windows.Forms.GroupBox groupBox3;
-        public System.Windows.Forms.CheckBox cb_HomeAssistantDiscovery;
-        public System.Windows.Forms.CheckBox cb_HomeAssistantPublishImage;
-        private System.Windows.Forms.Label label10;
-        public System.Windows.Forms.TextBox tb_HomeAssistantDiscoveryPrefix;
-        private System.Windows.Forms.Label label11;
-        public System.Windows.Forms.TextBox tb_HomeAssistantDeviceName;
-        private System.Windows.Forms.Label label12;
-        public System.Windows.Forms.TextBox tb_HomeAssistantOffDelaySeconds;
     }
 }

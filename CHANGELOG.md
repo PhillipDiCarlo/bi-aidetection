@@ -10,7 +10,6 @@ https://github.com/VorlonCD/bi-aidetection/commits/master
 - **Blue Onyx** is a selectable AI server type (DeepStack-compatible API, default port 32168).
 - **Vision-LLM refinement**: new AI server types `OpenAI_Vision` (any OpenAI-compatible endpoint: Ollama, LM Studio, OpenAI, OpenRouter, ...) and `Anthropic_Vision`. Configure as a refinement server with a prompt; the model's description and any objects it localizes flow into the summary/memo like any other detection. API keys are stored encrypted.
 - **Webhook action** per camera: POST/PUT any URL with a templated body and headers, optional multipart image, optional cancel call. See `webhook.md`.
-- **Home Assistant MQTT discovery**: one switch in MQTT settings publishes per-camera motion/person/vehicle/animal `binary_sensor`s (and optionally an MQTT camera) that auto-appear in Home Assistant. See `mqtt.md`.
 
 ### Requirements
 - Now requires the **.NET 10 Desktop Runtime** (was .NET 8, which leaves support in November 2026).
